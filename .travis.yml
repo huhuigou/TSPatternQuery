@@ -1,0 +1,4 @@
+language: r
+before_install:
+  - chmod +x tests/run_tests.R
+script: Rscript ./tests/run_tests.R
