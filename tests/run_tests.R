@@ -1,6 +1,5 @@
 library("RUnit")
 #Add Source File Name
-# source("R//<SourceFile>.R")
 
 test.suit <- defineTestSuite("TSPatternQuery",
                              dirs = file.path("tests"),
