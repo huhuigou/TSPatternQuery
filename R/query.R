@@ -16,10 +16,7 @@ query <- function(timeseries, df, patterns) {
   stopifnot(is.vector(patterns))
   stopifnot(length(patterns) > 0)
 
-  for (i in 1:length(patterns)) {
-    # stopifnot(length(formals(patterns[[i]] )== 2))
-    #TODO find a way to validate the names of the arguments. Also do this for df.
-  }
+  #TODO find a way to validate the names of the arguments. Also do this for df.
 
   if (!missing(df)) {
     stopifnot(formals(df) == 2)

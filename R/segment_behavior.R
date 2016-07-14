@@ -1,8 +1,21 @@
 #Segment Behavior Functions
 
 
+#overload to take point or segment
+rising <- function(segment){
 
-rising <- function(segment){}#rising on avg
+
+    point = timeseries[[index]]
+    if(index+1<length(timeseries)){
+      nextPoint = timeseries[[index+1]]
+      return(nextPoint > point)
+    }
+    else{
+      prevPoint = timeseries[[index-1]]
+      return(prevPoint < point)
+    }
+
+}#rising on avg
 
 all.rising <- function(segment){}#All points increasing from previous.is the . between all and rising okay?
 
