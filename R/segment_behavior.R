@@ -1,23 +1,72 @@
 #Segment Behavior Functions
 
+#might change to just "behavior" class because having this work for both points and segments
+#might be useful, and also point_value_comparisons will prob need to be deleted.
 
-#overload to take point or segment
-rising <- function(segment){
 
 
-    point = timeseries[[index]]
-    if(index+1<length(timeseries)){
-      nextPoint = timeseries[[index+1]]
-      return(nextPoint > point)
+
+
+#' Rising Point
+#'
+#' Returns TRUE if the time series is rising on average. If an index is provided, then the calculation
+#' is performed over the 3 points centered on the index within the provided time series.
+#'
+#'@param timeseries The time series that either contains the point referenced by index, or will be evaluated
+#'as rising or not on average itself.
+#'@param index The index to a point within the time series. The 3 point segment sentered on this point will be
+#'evaluated as rising or not.
+#'@export
+#'@import xts
+rising <- function(timeseries, index)
+{
+  #if missing an index, calculate whether the timeseries segment is rising on average or not.
+  if(missing(index)){
+    diff = vector(length = length(timeseries))
+    for(i in 2:length(timeseries)){
+      diff[i] = timeseries[[i]] - timeseries[[i-1]]
     }
-    else{
-      prevPoint = timeseries[[index-1]]
-      return(prevPoint < point)
-    }
+    return(sum(diff) > 0)
+  }
 
-}#rising on avg
+  #TODO: change this to calculate the average, not absolute. Basically do above using the 3 points.
+  #otherwise calculate if the 3-point segment centered on the indexed point is rising or not
+  stopifnot(length(timeseries) >= 2)
+  point = timeseries[[index]]
 
-all.rising <- function(segment){}#All points increasing from previous.is the . between all and rising okay?
+  if (index + 1 > length(timeseries))
+  {
+    prevPoint = timeseries[[index - 1]]
+    return(prevPoint < point)
+
+  }
+  if ((index - 1 < 1))
+  {
+    nextPoint = timeseries[[index + 1]]
+    return(nextPoint > point)
+  }
+
+  prevPoint = timeseries[[index - 1]]
+  nextPoint = timeseries[[index + 1]]
+  return(prevPoint < point && point < nextPoint)
+
+
+}
+
+
+
+
+#should probably move each of these to their own file...
+
+#'Returns true if the each point in the time series is larger than the previous one.
+#'@param timeseries A time series.
+#'@returns TRUE if each point in the timeseries provied is higher than the previous point, FALSE otherwise.
+#'@export
+all.rising <- function(timeseries){
+  for(i in 2:length(timeseries)){
+    return(timeseries[[i]]>timeseries[[i-1]])
+  }
+}
 
 falling <- function(segment){}
 

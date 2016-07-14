@@ -10,13 +10,14 @@
 #'where index is numeric and timeseries is xts. Each function should return true if the desired
 #'pattern at "index" is found within "timeseries".
 #'@export
-library(xts)
+
 query <- function(timeseries, df, patterns) {
+
   stopifnot(xts::is.xts(timeseries))
   stopifnot(is.vector(patterns))
   stopifnot(length(patterns) > 0)
 
-  #TODO find a way to validate the names of the arguments. Also do this for df.
+  #TODO find a way to validate the names of the arguments, and that the patterns take the correct args.
 
   if (!missing(df)) {
     stopifnot(formals(df) == 2)

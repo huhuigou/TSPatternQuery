@@ -1,11 +1,24 @@
 
-future <- function(distance, before, after){}#overload to take distance in points or time interval
+#'Select a Time Series Segment
+#'
+#'Specify a segment of the time series in the future using seconds from the current point
+#'@param index The index of the current point in the series
+#'@param timeseries The time series as xts
+#'@param time1 The beginning of the segment specified by the number of seconds from the current point.
+#'Use a negative (-) number to specify that the segment begins in the past.
+#'@param time2 The end of the semgent specified by the number of seconds from the current point.
+#'Use a negative (-) number to specify that the segment ends in the past.
+#'@return A subset of the xts time series containing all points that fall within the segment.
+#'@export
+selectSegment <- function(index, timeseries, time1, time2){
+  stopifnot(time1 < time2)
 
-past <- function(distance, before, after){}
+  time1 = time(timeseries[index]) + time1
+  time2 = time(timeseries[index]) + time2
+  return(timeseries[paste(time1,"/",time2, sep="")])
+}
 
-#Can I think of better names for these (next is already taken for flow control in loops)
 
-#overload above functions to take distance in points or POSix time.All arguments are optiona (default)
-#to distance=1 point. Before and after return vectors. distance returns a vector if given a POSix time.
-#if only before is given, will probably have to default after or something. Might be a better way to do
-#it than a bunch of if statements or switch. Need to look into polymorphic functionf for R.
+
+
+
