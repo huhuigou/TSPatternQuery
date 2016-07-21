@@ -11,7 +11,7 @@
 #'@param num.pips A numeric for the number of PIPs to be identified.
 #'@return A vector containing the indexes of the pips in the timeseries provided
 #'@export
-GetPIPS <- function(timeseries, num.pips){
+GetPIPs <- function(timeseries, num.pips){
   timeseries.length <- length(timeseries)
   is.pip <- vector(mode="logical", length=timeseries.length)
 
@@ -46,7 +46,8 @@ GetPIPS <- function(timeseries, num.pips){
 
   #Find the indexes of the points where is.pip[i]==TRUE, and return those indexes.
   pip.indexes <- which(is.pip)
-  return(pip.indexes)
+  pips <- timeseries[pip.indexes]
+  return(pips)
 }
 
 

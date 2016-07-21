@@ -1,38 +1,58 @@
-#'Query A Time Series
+#'Query A Time Series Using a Sliding Window Approach
+#'
+#'Queries a given time series using a sliding window and Spearman Ranking Correlation Coefficient for
+#'similarity assessment between each window and a given pattern.
+#'
+#'@param timeseries The time series to be queries for the pattern
+#'@param pattern.template The time series that represents a template of the pattern being searched for
+#'@param window.length The length of the sliding window, which the pattern.template will be matched against.
+#'Defaults to 1.2 times the length of the template pattern.
 #'@import xts
-#'@param timeseries An xts timeseries
-#'@param df A Distinctive Feature of the pattern that the query is searching for.
-#'This function should take an xts object of length 1.
-#'Must be of the exact form function(index, timeseries), where index is numeric and timeseries is
-#'xts. This function should return true if the desired pattern at "index" is found within
-#'"timeseries".
-#'@param patterns A vector of functions of the same exact form as df: function(index, timeseries),
-#'where index is numeric and timeseries is xts. Each function should return true if the desired
-#'pattern at "index" is found within "timeseries".
 #'@export
+Query <- function(timeseries,
+                  pattern.template,
+                  window.length = 1.2*GetTimeLength(pattern.template),
+                  spearmans.rho.threshold
+                  ) {
+  library(xts)
+  stopifnot(is.xts(timeseries))
+  stopifnot(is.xts(pattern.template))
+  stopifnot(is.xts(window.length))
 
-query <- function(timeseries, df, patterns) {
 
-  stopifnot(xts::is.xts(timeseries))
-  stopifnot(is.vector(patterns))
-  stopifnot(length(patterns) > 0)
+  num.patterns.found <- 0
+  timeseries.length <- length(timeseries)
 
-  #TODO find a way to validate the names of the arguments, and that the patterns take the correct args.
 
-  if (!missing(df)) {
-    stopifnot(formals(df) == 2)
-    stopifnot(is.function(df))
-    patterns = c(df, patterns)
-  }
-
-  for (i in 1:length(timeseries)) {
-    p = 1
-    while (patterns[[p]](index = i, timeseries = timeseries)) {
-      p = p + 1
-      if (p > length(patterns)) {
-        return(TRUE)
-      }
+  i <- 1
+  while(i<timeseries.length){
+    window.time.subset <- paste(time(timeseries[i]), "/" ,time(timeseries[i])+window.length, sep="" )
+    window <- timeseries[window.time.subset]
+    pips <-GetPIPs(window, length(pattern.template))
+    matches <- MatchPattern(pips, pattern.template, spearmans.rho.threshold)
+    if(matches){
+      plot(timeseries[window.time.subset])
+      num.patterns.found <- num.patterns.found+1
+      i <- i+length(window)
+    }
+    else{
+      i <- i+1
     }
   }
-  return(FALSE)
+
+  return(num.patterns.found)
+
+
 }
+
+#' Returns the Length of a Time Series
+GetTimeLength <- function(timeseries){
+  t1.num <- as.numeric(time(timeseries[1]))
+  t2.num <- as.numeric(time(timeseries[length(timeseries)]))
+  diff <- t2.num - t1.num
+
+
+}
+
+
+
