@@ -13,6 +13,9 @@ GetPerpDist(point, left.point, right.point)
 
 \item{right.point}{The right point that will constitute the right endpoint of the line}
 }
+\value{
+The perpendicular distance
+}
 \description{
 This is a helper function
 }
