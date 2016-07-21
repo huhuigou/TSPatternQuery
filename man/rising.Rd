@@ -10,12 +10,10 @@ rising(timeseries, index)
 \item{timeseries}{The time series that either contains the point referenced by index, or will be evaluated
 as rising or not on average itself.}
 
-\item{index}{The index to a point within the time series. The 3 point segment sentered on this point will be
-evaluated as rising or not.}
+\item{index}{The index to a point within the time series.}
 }
 \description{
-Returns true if the point is rising within the context of the previous point and next point
-(i.e. previous_point < this_point < next_point). For endpoints, it relies on the single
-other adjacent point (i.e previous_point < this_point OR this_point < next_point).
+Returns TRUE if the time series is rising on average. If an index is provided, then it returns true
+if the current (indexed) point is less than the next point.
 }
 

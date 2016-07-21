@@ -2,11 +2,18 @@
 % Please edit documentation in R/segment_behavior.R
 \name{all.rising}
 \alias{all.rising}
-\title{Returns true if the time series}
+\title{Returns true if the each point in the time series is larger than the previous one.}
 \usage{
 \method{all}{rising}(timeseries)
 }
+\arguments{
+\item{timeseries}{A time series.}
+}
+\value{
+TRUE if each point in the timeseries provied is higher than the previous point, FALSE otherwise.
+}
 \description{
-Returns true if the time series
+This differs from rising in that it is absolute. Each point must be higher than the previous one in order
+for this to return true.
 }
 

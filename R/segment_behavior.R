@@ -9,13 +9,12 @@
 
 #' Rising Point
 #'
-#' Returns TRUE if the time series is rising on average. If an index is provided, then the calculation
-#' is performed over the 3 points centered on the index within the provided time series.
+#' Returns TRUE if the time series is rising on average. If an index is provided, then it returns true
+#' if the current (indexed) point is less than the next point.
 #'
 #'@param timeseries The time series that either contains the point referenced by index, or will be evaluated
 #'as rising or not on average itself.
-#'@param index The index to a point within the time series. The 3 point segment sentered on this point will be
-#'evaluated as rising or not.
+#'@param index The index to a point within the time series.
 #'@export
 #'@import xts
 rising <- function(timeseries, index)
@@ -29,38 +28,20 @@ rising <- function(timeseries, index)
     return(sum(diff) > 0)
   }
 
-  #TODO: change this to calculate the average, not absolute. Basically do above using the 3 points.
-  #otherwise calculate if the 3-point segment centered on the indexed point is rising or not
-  stopifnot(length(timeseries) >= 2)
+  stopifnot(index < length(timeseries))
   point = timeseries[[index]]
 
-  if (index + 1 > length(timeseries))
-  {
-    prevPoint = timeseries[[index - 1]]
-    return(prevPoint < point)
-
-  }
-  if ((index - 1 < 1))
-  {
-    nextPoint = timeseries[[index + 1]]
-    return(nextPoint > point)
-  }
-
-  prevPoint = timeseries[[index - 1]]
   nextPoint = timeseries[[index + 1]]
-  return(prevPoint < point && point < nextPoint)
-
-
+  return(point < nextPoint)
 }
 
-
-
-
-#should probably move each of these to their own file...
-
 #'Returns true if the each point in the time series is larger than the previous one.
+#'
+#'This differs from rising in that it is absolute. Each point must be higher than the previous one in order
+#'for this to return true.
+#'
 #'@param timeseries A time series.
-#'@returns TRUE if each point in the timeseries provied is higher than the previous point, FALSE otherwise.
+#'@return TRUE if each point in the timeseries provied is higher than the previous point, FALSE otherwise.
 #'@export
 all.rising <- function(timeseries){
   for(i in 2:length(timeseries)){
@@ -68,9 +49,17 @@ all.rising <- function(timeseries){
   }
 }
 
-falling <- function(segment){}
 
-all.falling <- function(segment){}
+
+
+
+
+
+
+
+
+
+
 
 gradient <- function(segment){}#gradient of linear regression line
 
