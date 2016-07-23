@@ -45,7 +45,3 @@ test.GetPIPs <- function() {
   checkEquals(actual.6, test.6)
 
 }
-
-
-
-
