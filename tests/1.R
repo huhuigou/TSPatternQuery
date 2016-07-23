@@ -5,21 +5,44 @@ library(TSTestDataUtil)
 
 test.GetPerpDist <- function() {
   three.points <- createCustomTimeSeries(c(0,2,0), c(2,2))
-  three.points.tilted <- createCustomTimeSeries(c(0, 3, 2), c(1, 3))
   actual.perp.dist <- 2
-  actual.perp.dist.tilted <- 2.36 # Double check that this is right
 
   test.perp.dist <-GetPerpDist(three.points[2], three.points[1], three.points[3])
-  test.perp.dist.tilted <-GetPerpDist(three.points.tilted[2], three.points.tilted[1], three.points.tilted[3])
   RUnit::checkEquals(actual.perp.dist, test.perp.dist, msg = "The perp.dist calculation is incorrect for a simple example.")
-  RUnit::checkEquals(actual.perp.dist.tilted, test.perp.dist.tilted,
-                     msg = "The perp.dist calculation is incorrect for a simple example, when the line between p1 and p2 was
-                     tilted.")
 }
 
 test.GetPIPs <- function() {
-  ts <- createCustomTimeSeries(c(1,2,10,2,1,-11,2,2,12,2,1,10,3,2))
+  ts <- createCustomTimeSeries(c(1,-5,0,4,0,1,-6,1,0,0), c(20,20,20,20,20,20,20,20,20))
+  pips.1 <- GetPIPs(ts, 1)
+  pips.2 <- GetPIPs(ts, 2)
+  pips.3 <- GetPIPs(ts, 3)
+  pips.6 <- GetPIPs(ts, 6)
+  pips.10 <- GetPIPs(ts, 10)
 
+  #Check that first and last pip are always endpoints
+  checkEquals(ts[[1]], pips.1[[1]])
+  checkEquals(ts[[10]], pips.1[[2]])
+  checkEquals(ts[[1]], pips.2[[1]])
+  checkEquals(ts[[10]], pips.2[[2]])
+  checkEquals(ts[[1]], pips.3[[1]])
+  checkEquals(ts[[10]], pips.3[[3]])
+  checkEquals(ts[[1]], pips.6[[1]])
+  checkEquals(ts[[10]], pips.6[[6]])
+  checkEquals(ts[[1]], pips.10[[1]])
+  checkEquals(ts[[10]], pips.10[[10]])
+
+  print(pips.3)
+  print(pips.6)
+
+  #check exception thrown when num.pips > length(timeseries)
+  checkException(GetPIPs(ts, 11))
+
+  #Check pips identified in correct order
+  checkEquals(ts[[7]], pips.3[[2]])
+
+  test.6 <- as.vector(pips.6)
+  actual.6 <- c(ts[[1]], ts[[2]], ts[[4]], ts[[7]], ts[[8]], ts[[10]])
+  checkEquals(actual.6, test.6)
 
 }
 

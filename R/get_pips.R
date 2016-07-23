@@ -12,6 +12,7 @@
 #'@return A vector containing the indexes of the pips in the timeseries provided
 #'@export
 GetPIPs <- function(timeseries, num.pips) {
+  stopifnot(num.pips <= length(timeseries))
   timeseries.length <- length(timeseries)
   is.pip <- vector(mode = "logical", length = timeseries.length)
   #Set first 2 PIPs to be endpoints
@@ -19,7 +20,7 @@ GetPIPs <- function(timeseries, num.pips) {
   is.pip[timeseries.length] <- TRUE
   #Determine which points are PIPs, and set is.pip[i] <- TRUE, where i is the index of those points
   i <- 1
-  while (i < num.pips - 2) {
+  while (i < num.pips - 1) {
     perp.dist <- vector(mode = "numeric", length = timeseries.length - 2)
     perp.dist <- EnumeratePerDistVector(timeseries.length, is.pip, timeseries, perp.dist)
     index.of.pip <- which.max(perp.dist) + 1
@@ -71,8 +72,6 @@ GetAdjacentPIPIndex <- function(index, is.pip, side) {
   adj.pip.index <- k
   return(adj.pip.index)
 }
-
-
 
 #'Gets the perpendicular distance between point and the line connecting left.point and right.point.
 #'
