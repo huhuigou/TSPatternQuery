@@ -50,8 +50,7 @@ GetTimeLength <- function(timeseries){
   t1.num <- as.numeric(time(timeseries[1]))
   t2.num <- as.numeric(time(timeseries[length(timeseries)]))
   diff <- t2.num - t1.num
-
-
+  return(diff)
 }
 
 
