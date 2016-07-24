@@ -21,7 +21,8 @@ MatchPattern <- function(timeseries, pattern.template, threshold=0.7){
 
   ts <- as.vector(timeseries)
   pt <- as.vector(pattern.template)
+  if(var(ts,pt) == 0)
+    return(TRUE)
   rho <- cor.test(ts, pt, method="spearman")[[4]]
-
-  return( as.logical(rho>threshold) )
+  return( as.logical(rho > threshold) )
 }

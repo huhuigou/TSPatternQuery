@@ -12,24 +12,24 @@
 Query <- function(timeseries,
                   pattern.template,
                   window.length = 1.2*GetTimeLength(pattern.template),
-                  spearmans.rho.threshold
+                  spearmans.rho.threshold = 0.7
                   ) {
   library(xts)
   stopifnot(is.xts(timeseries))
   stopifnot(is.xts(pattern.template))
-  stopifnot(is.xts(window.length))
 
 
   num.patterns.found <- 0
   timeseries.length <- length(timeseries)
 
-
   i <- 1
-  while(i<timeseries.length){
+  while(i<timeseries.length-length(pattern.template)){
     window.time.subset <- paste(time(timeseries[i]), "/" ,time(timeseries[i])+window.length, sep="" )
     window <- timeseries[window.time.subset]
+    print(window)
     pips <-GetPIPs(window, length(pattern.template))
     matches <- MatchPattern(pips, pattern.template, spearmans.rho.threshold)
+    print(matches)
     if(matches){
       plot(timeseries[window.time.subset])
       num.patterns.found <- num.patterns.found+1
@@ -41,8 +41,6 @@ Query <- function(timeseries,
   }
 
   return(num.patterns.found)
-
-
 }
 
 #' Returns the Length of a Time Series

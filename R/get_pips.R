@@ -40,7 +40,9 @@ GetPIPs <- function(timeseries, num.pips) {
 EnumeratePerDistVector <- function(timeseries.length, is.pip, timeseries, perp.dist) {
   j = 1
   while (j < timeseries.length) {
+    #sets per.dist of pips to -1 so they will not be selected as a pip twice by the which.max function
     if (is.pip[j]) {
+      perp.dist[j-1] <- -1
       j <- j + 1
       next()
     }
@@ -49,7 +51,6 @@ EnumeratePerDistVector <- function(timeseries.length, is.pip, timeseries, perp.d
     perp.dist[j-1] <- GetPerpDist(timeseries[j], timeseries[left.pip.index], timeseries[right.pip.index])
     j <- j + 1
   }
-  print(perp.dist)
   return(perp.dist)
 }
 

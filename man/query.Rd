@@ -5,7 +5,7 @@
 \title{Query A Time Series Using a Sliding Window Approach}
 \usage{
 Query(timeseries, pattern.template, window.length = 1.2 *
-  GetTimeLength(pattern.template), spearmans.rho.threshold)
+  GetTimeLength(pattern.template), spearmans.rho.threshold = 0.7)
 }
 \arguments{
 \item{timeseries}{The time series to be queries for the pattern}
