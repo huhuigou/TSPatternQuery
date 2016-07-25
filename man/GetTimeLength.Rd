@@ -2,11 +2,17 @@
 % Please edit documentation in R/query.R
 \name{GetTimeLength}
 \alias{GetTimeLength}
-\title{Returns the Length of a Time Series}
+\title{Returns the Length of a Time Series in Seconds}
 \usage{
 GetTimeLength(timeseries)
 }
+\arguments{
+\item{timeseries}{An xts timeseries}
+}
+\value{
+The numeric length of the time series in seconds.
+}
 \description{
-Returns the Length of a Time Series
+A helper method for Query, returns the length of an xts timeseries in seconds
 }
 

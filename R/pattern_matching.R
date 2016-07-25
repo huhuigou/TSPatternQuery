@@ -2,15 +2,15 @@
 
 #'Check if a Template Pattern Matches a Timeseries
 #'
-#'If the template pattern matches the timeseries (passing a threshold for Spearman's
-#'Rank Correlation Coefficient), then the timeseries is returned. This function only
-#'considers the y value (i.e. not the time intervals) for matching purposes. It is assumed
-#'that the timeseries covers a similar length of time as the pattern.template.
+#'Returns TRUE the template pattern matches the timeseries (by passing a threshold for Spearman's
+#'Rank Correlation Coefficient). This function only considers the y value (i.e. not the time intervals)
+#'for matching purposes. It is assumed that the timeseries covers a similar length of time as the
+#'pattern.template.
 #'
 #'PROVIDE CITATION (HYBRID PAPER)
 #'
 #'@param timeseries The xts time series to be checked agains the pattern.template to see if it
-#'contains the pattern. Must have the same number of points as the pattern.template
+#'exhibits the pattern. Must have the same number of points as the pattern.template
 #'@param pattern.template An xts time series representation of a pattern. Must have the same
 #'number of points as the timeseries.
 #'@param threshold The threshold for the spearman's rho. Default is arbitrarily set to 0.7

@@ -2,22 +2,24 @@
 % Please edit documentation in R/get_pips.R
 \name{GetPerpDist}
 \alias{GetPerpDist}
-\title{Gets the perpendicular distance between point and the line connecting left.point and right.point.}
+\title{Get the Perpendicular Distance Between Point and the line connecting left.point and right.point.}
 \usage{
 GetPerpDist(point, left.point, right.point)
 }
 \arguments{
-\item{point}{The point in the middle. Distance will be calculated between this point and the line.}
+\item{point}{The point (xts object with length=1) in the middle. Distance will be calculated between this point and the line.}
 
-\item{left.point}{The left point that will constitute the left endpoind of the line}
+\item{left.point}{The left point (xts object with length=1) that will constitute the left endpoind of the line}
 
-\item{right.point}{The right point that will constitute the right endpoint of the line}
+\item{right.point}{The right point (xts object with length=1) that will constitute the right endpoint of the line}
 }
 \value{
-The perpendicular distance
+The numeric perpendicular distance
 }
 \description{
-This is a helper function
+This is a helper function for EnumeratePerDist, which in turn is a helper function for
+GetPIPs. Thus, these functions are highly coupled, and exist simply to make the code more
+readable. This function is made available to the user because it could be useful on its own.
 }
 \details{
 PROVIDE CITATION FOR EQUATION

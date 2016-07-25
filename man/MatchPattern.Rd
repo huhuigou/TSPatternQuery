@@ -8,7 +8,7 @@ MatchPattern(timeseries, pattern.template, threshold = 0.7)
 }
 \arguments{
 \item{timeseries}{The xts time series to be checked agains the pattern.template to see if it
-contains the pattern. Must have the same number of points as the pattern.template}
+exhibits the pattern. Must have the same number of points as the pattern.template}
 
 \item{pattern.template}{An xts time series representation of a pattern. Must have the same
 number of points as the timeseries.}
@@ -19,10 +19,10 @@ number of points as the timeseries.}
 TRUE if the spearman ranking correlation coefficient is higher than the set threshold.
 }
 \description{
-If the template pattern matches the timeseries (passing a threshold for Spearman's
-Rank Correlation Coefficient), then the timeseries is returned. This function only
-considers the y value (i.e. not the time intervals) for matching purposes. It is assumed
-that the timeseries covers a similar length of time as the pattern.template.
+Returns TRUE the template pattern matches the timeseries (by passing a threshold for Spearman's
+Rank Correlation Coefficient). This function only considers the y value (i.e. not the time intervals)
+for matching purposes. It is assumed that the timeseries covers a similar length of time as the
+pattern.template.
 }
 \details{
 PROVIDE CITATION (HYBRID PAPER)

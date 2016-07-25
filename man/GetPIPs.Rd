@@ -2,23 +2,24 @@
 % Please edit documentation in R/get_pips.R
 \name{GetPIPs}
 \alias{GetPIPs}
-\title{Retrieve Perceptually Important Points (PIPS) Within a Time Series}
+\title{Retrieve Perceptually Important Points (PIPS) from a Time Series}
 \usage{
 GetPIPs(timeseries, num.pips)
 }
 \arguments{
-\item{timeseries}{The (xts) time series within which PIPS will be identified}
+\item{timeseries}{The xts time series within which PIPs will be identified}
 
-\item{num.pips}{A numeric for the number of PIPs to be identified.}
+\item{num.pips}{A numeric for the number of PIPs to be identified}
 }
 \value{
 A vector containing the indexes of the pips in the timeseries provided
 }
 \description{
-Perceptually Important Points (PIPS) are points that are perceptually important for the identification
-of patterns in time series data. Each PIP is identified in this function by the choosing the point with
-the maximum perpendicular distance to a line drawn between adjacent PIPS. Endpoints of the time series
-are chosen as the first PIPS.
+Perceptually Important Points (PIPs) are points that are perceptually important for the identification
+of patterns in time series data. Each PIP is identified in this function by choosing the point with
+the maximum perpendicular distance to a line drawn between adjacent PIPs. Endpoints of the time series
+are chosen as the first PIPS, and the process is repeated iteratively until the desired number of
+PIPs are found.
 }
 \details{
 PROVIDE CITATION

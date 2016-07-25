@@ -8,15 +8,25 @@ Query(timeseries, pattern.template, window.length = 1.2 *
   GetTimeLength(pattern.template), spearmans.rho.threshold = 0.7)
 }
 \arguments{
-\item{timeseries}{The time series to be queries for the pattern}
+\item{timeseries}{The xts time series to be queried for the pattern}
 
-\item{pattern.template}{The time series that represents a template of the pattern being searched for}
+\item{pattern.template}{The xts time series that represents a template of the pattern being searched for}
 
-\item{window.length}{The length of the sliding window, which the pattern.template will be matched against.
-Defaults to 1.2 times the length of the template pattern.}
+\item{window.length}{A numeric length (in seconds) for the sliding window, which the pattern.template
+will be matched against. Defaults to 1.2 times the length of the template pattern.}
+
+\item{spearmans.rho.threshold}{The numeric threshold used for the Spearman's rho similarity coefficient.
+This values should above 0 and less than 1. Setting this values closer to 1 ensures that only
+very similar time series segments will match. Arbitrarily defaults to 0.7.}
+}
+\value{
+The number of matched patterns in the series
 }
 \description{
 Queries a given time series using a sliding window and Spearman Ranking Correlation Coefficient for
 similarity assessment between each window and a given pattern.
+}
+\details{
+PROVIDE CITATION
 }
 

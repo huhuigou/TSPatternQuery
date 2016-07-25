@@ -4,10 +4,27 @@
 \alias{EnumeratePerDistVector}
 \title{Enumerate the per.dist Vector with Perpendicular Distances}
 \usage{
-EnumeratePerDistVector(timeseries.length, is.pip, timeseries, perp.dist)
+EnumeratePerDistVector(is.pip, timeseries, perp.dist)
+}
+\arguments{
+\item{is.pip}{A logical vector, which is TRUE at the index of each
+point (from timeseries) which has been identified as a PIP}
+
+\item{timeseries}{The time series from from which PIPs are being
+identified}
+
+\item{perp.dist}{The numeric perpendicular distance vector which this
+function is filling with perpendicular distances}
+}
+\value{
+The perp.dist vector enumerated with newly calculated
+perpendicular distances.
 }
 \description{
 This is a helper method meant to make the code more readable,
-and is thus highly coupled to GetPIPs
+and is thus highly coupled to GetPIPs. It simply enumerates
+the perp.dist vector with perpendicular distances between each
+non-PIP point and the line connecting said point's adjacent
+PIPs.
 }
 
