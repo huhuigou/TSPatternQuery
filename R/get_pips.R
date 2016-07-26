@@ -6,7 +6,8 @@
 #'are chosen as the first PIPS, and the process is repeated iteratively until the desired number of
 #'PIPs are found.
 #'
-#'PROVIDE CITATION
+#'@references
+#'Zhe Zhang, Jian Jiang, Xiaoyan Liu, Ricky Lau, Huaiqing Wang, and Rui Zhang. A real time hybrid pattern matching scheme for stock time series. In Proceedings of the Twenty-First Australasian Conference on Database Technologies - Volume 104, ADC ’10, pages 161–170, Darlinghurst, Australia, Australia, 2010. Australian Computer Society, Inc.
 #'
 #'@param timeseries The xts time series within which PIPs will be identified
 #'@param num.pips A numeric for the number of PIPs to be identified
@@ -101,7 +102,8 @@ GetAdjacentPIPIndex <- function(index, is.pip, side) {
 #'GetPIPs. Thus, these functions are highly coupled, and exist simply to make the code more
 #'readable. This function is made available to the user because it could be useful on its own.
 #'
-#'PROVIDE CITATION FOR EQUATION
+#'@references
+#'Wikipedia. Distance from a point to a line — wikipedia, the free encyclopedia, 2016. [Online; accessed 26-July-2016].
 #'
 #'@param point The point (xts object with length=1) in the middle. Distance will be calculated between this point and the line.
 #'@param left.point The left point (xts object with length=1) that will constitute the left endpoind of the line

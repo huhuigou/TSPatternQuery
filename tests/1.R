@@ -1,4 +1,4 @@
-#'Test Case for GetPIPs
+#'Tests for get_pips.R
 #'@import RUnit, xts, TSTestDataUtil
 library(RUnit)
 library(TSTestDataUtil)
@@ -12,7 +12,10 @@ test.GetPerpDist <- function() {
 }
 
 test.GetPIPs <- function() {
-  ts <- createCustomTimeSeries(c(1,-5,0,4,0,1,-6,1,0,0), c(20,20,20,20,20,20,20,20,20))
+  ts <- createCustomTimeSeries(
+    c(1,-5,0,4,0,1,-6,1,0,0),
+    c(20,20,20,20,20,20,20,20,20)
+    )
   pips.1 <- GetPIPs(ts, 1)
   pips.2 <- GetPIPs(ts, 2)
   pips.3 <- GetPIPs(ts, 3)
@@ -41,7 +44,13 @@ test.GetPIPs <- function() {
   checkEquals(ts[[7]], pips.3[[2]])
 
   test.6 <- as.vector(pips.6)
-  actual.6 <- c(ts[[1]], ts[[2]], ts[[4]], ts[[7]], ts[[8]], ts[[10]])
+  actual.6 <- c(
+    ts[[1]],
+    ts[[2]],
+    ts[[4]],
+    ts[[7]],
+    ts[[8]],
+    ts[[10]]
+    )
   checkEquals(actual.6, test.6)
-
 }

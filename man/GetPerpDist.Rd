@@ -21,7 +21,7 @@ This is a helper function for EnumeratePerDist, which in turn is a helper functi
 GetPIPs. Thus, these functions are highly coupled, and exist simply to make the code more
 readable. This function is made available to the user because it could be useful on its own.
 }
-\details{
-PROVIDE CITATION FOR EQUATION
+\references{
+Wikipedia. Distance from a point to a line — wikipedia, the free encyclopedia, 2016. [Online; accessed 26-July-2016].
 }
 

@@ -21,7 +21,7 @@ the maximum perpendicular distance to a line drawn between adjacent PIPs. Endpoi
 are chosen as the first PIPS, and the process is repeated iteratively until the desired number of
 PIPs are found.
 }
-\details{
-PROVIDE CITATION
+\references{
+Zhe Zhang, Jian Jiang, Xiaoyan Liu, Ricky Lau, Huaiqing Wang, and Rui Zhang. A real time hybrid pattern matching scheme for stock time series. In Proceedings of the Twenty-First Australasian Conference on Database Technologies - Volume 104, ADC ’10, pages 161–170, Darlinghurst, Australia, Australia, 2010. Australian Computer Society, Inc.
 }
 

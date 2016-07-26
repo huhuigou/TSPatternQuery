@@ -3,7 +3,9 @@
 #'Queries a given time series using a sliding window and Spearman Ranking Correlation Coefficient for
 #'similarity assessment between each window and a given pattern.
 #'
-#'PROVIDE CITATION
+#'@references
+#'Zhe Zhang, Jian Jiang, Xiaoyan Liu, Ricky Lau, Huaiqing Wang, and Rui Zhang. A real time hybrid pattern matching scheme for stock time series. In Proceedings of the Twenty-First Australasian Conference on Database Technologies - Volume 104, ADC ’10, pages 161–170, Darlinghurst, Australia, Australia, 2010. Australian Computer Society, Inc.
+#'
 #'
 #'@param timeseries The xts time series to be queried for the pattern
 #'@param pattern.template The xts time series that represents a template of the pattern being searched for
@@ -25,6 +27,10 @@ Query <- function(timeseries,
   stopifnot(is.xts(pattern.template))
   stopifnot(spearmans.rho.threshold > 0)
   stopifnot(spearmans.rho.threshold < 1)
+  if(var(pattern.template)==0){
+    stop("The variance of the pattern.template cannot be 0 (e.g., all values cannot be identical).
+         Please choose a pattern.template that is not completely flat .")
+  }
 
 
   num.patterns.found <- 0

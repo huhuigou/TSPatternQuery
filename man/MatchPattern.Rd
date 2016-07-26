@@ -22,9 +22,10 @@ TRUE if the spearman ranking correlation coefficient is higher than the set thre
 Returns TRUE the template pattern matches the timeseries (by passing a threshold for Spearman's
 Rank Correlation Coefficient). This function only considers the y value (i.e. not the time intervals)
 for matching purposes. It is assumed that the timeseries covers a similar length of time as the
-pattern.template.
+pattern.template. Returns FALSE if the variance of the timeseries parameter is 0, since
+cor.test(..., method="spearman") cannot handle that.
 }
-\details{
-PROVIDE CITATION (HYBRID PAPER)
+\references{
+Zhe Zhang, Jian Jiang, Xiaoyan Liu, Ricky Lau, Huaiqing Wang, and Rui Zhang. A real time hybrid pattern matching scheme for stock time series. In Proceedings of the Twenty-First Australasian Conference on Database Technologies - Volume 104, ADC ’10, pages 161–170, Darlinghurst, Australia, Australia, 2010. Australian Computer Society, Inc.
 }
 

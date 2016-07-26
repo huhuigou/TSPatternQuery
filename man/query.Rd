@@ -26,7 +26,7 @@ The number of matched patterns in the series
 Queries a given time series using a sliding window and Spearman Ranking Correlation Coefficient for
 similarity assessment between each window and a given pattern.
 }
-\details{
-PROVIDE CITATION
+\references{
+Zhe Zhang, Jian Jiang, Xiaoyan Liu, Ricky Lau, Huaiqing Wang, and Rui Zhang. A real time hybrid pattern matching scheme for stock time series. In Proceedings of the Twenty-First Australasian Conference on Database Technologies - Volume 104, ADC ’10, pages 161–170, Darlinghurst, Australia, Australia, 2010. Australian Computer Society, Inc.
 }
 
