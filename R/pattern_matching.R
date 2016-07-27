@@ -35,6 +35,6 @@ MatchPattern <- function(timeseries, pattern.template, threshold=0.7){
   #This creates a bug, find a better way to deal with all ties
   # if(var(ts,pt) == 0)
   #   return(False)
-  rho <- cor.test(ts, pt, method="spearman")[[4]]
+  tryCatch.W.E(rho<-cor.test(ts, pt, method="spearman")[[4]])
   return( as.logical(rho > threshold) )
 }

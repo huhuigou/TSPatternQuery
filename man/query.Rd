@@ -5,7 +5,8 @@
 \title{Query A Time Series Using a Sliding Window Approach}
 \usage{
 Query(timeseries, pattern.template, window.length = 1.2 *
-  GetTimeLength(pattern.template), spearmans.rho.threshold = 0.7)
+  GetTimeLength(pattern.template), spearmans.rho.threshold = 0.7,
+  return.matched.patterns = FALSE)
 }
 \arguments{
 \item{timeseries}{The xts time series to be queried for the pattern}

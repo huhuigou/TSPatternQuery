@@ -14,13 +14,20 @@
 #'@param spearmans.rho.threshold The numeric threshold used for the Spearman's rho similarity coefficient.
 #'This values should above 0 and less than 1. Setting this values closer to 1 ensures that only
 #'very similar time series segments will match. Arbitrarily defaults to 0.7.
-#'@return The number of matched patterns in the series
+#'@param return.matched.patterns A logical value. TRUE makes the algorithm return each window that matched
+#'as a list of xts objects. FALSE returns a 1 x 2 data frame with columns "Patterns" = Number of patterns
+#'found, and "Errors" = number of exceptions thrown by the GetPIPs function (e.g., incidences of there
+#'being too few data points found in the window to identify enough PIPs).
+#'Defaults to FALSE.
+#'@return Either a list of matched windows or a data frame containing the number of matches and
+#'errors, depending on the return.matched.patterns parameter.
 #'@import xts
 #'@export
 Query <- function(timeseries,
                   pattern.template,
                   window.length = 1.2*GetTimeLength(pattern.template),
-                  spearmans.rho.threshold = 0.7
+                  spearmans.rho.threshold = 0.7,
+                  return.matched.patterns = FALSE
                   ) {
   library(xts)
   stopifnot(is.xts(timeseries))
@@ -35,6 +42,7 @@ Query <- function(timeseries,
 
   num.patterns.found <- 0
   num.errors <- 0
+  patterns <- list()
 
   i <- 1
   while(i<length(timeseries)-length(pattern.template)){
@@ -53,20 +61,25 @@ Query <- function(timeseries,
       next()
     }
 
-
-
     matches <- MatchPattern(pips, pattern.template, spearmans.rho.threshold)
     if(matches){
-      plot(window)
       num.patterns.found <- num.patterns.found+1
+      if(return.matched.patterns) {
+        patterns[[num.patterns.found]] <- window
+
+      }
       i <- i+length(window)
     }
     else{
       i <- i+1
     }
   }
-
-  return( list( c( paste("Patterns found=",num.patterns.found), paste("Errors=",num.errors)) )  )
+  if(return.matched.patterns){
+    return(patterns)
+  }
+  return(
+      data.frame("Patterns" = num.patterns.found, "Errors" = num.errors)
+    )
 }
 
 #' Returns the Length of a Time Series in Seconds
