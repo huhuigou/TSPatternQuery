@@ -34,15 +34,30 @@ Query <- function(timeseries,
 
 
   num.patterns.found <- 0
-
+  num.errors <- 0
 
   i <- 1
   while(i<length(timeseries)-length(pattern.template)){
     window.time.subset <- paste(time(timeseries[i]), "/" ,time(timeseries[i])+window.length, sep="" )
     window <- timeseries[window.time.subset]
-    pips <-GetPIPs(window, length(pattern.template))
+
+    pips <- tryCatch(
+      pips <- GetPIPs(window, length(pattern.template)),
+      error=function(e){
+        num.errors <- num.errors + 1
+        return(e)
+        }
+    )
+    if(inherits(pips, "error")){
+      i <- i+1
+      next()
+    }
+
+
+
     matches <- MatchPattern(pips, pattern.template, spearmans.rho.threshold)
     if(matches){
+      plot(window)
       num.patterns.found <- num.patterns.found+1
       i <- i+length(window)
     }
@@ -51,7 +66,7 @@ Query <- function(timeseries,
     }
   }
 
-  return(num.patterns.found)
+  return( list( c( paste("Patterns found=",num.patterns.found), paste("Errors=",num.errors)) )  )
 }
 
 #' Returns the Length of a Time Series in Seconds
