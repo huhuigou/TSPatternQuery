@@ -4,9 +4,9 @@
 \alias{Query}
 \title{Query A Time Series Using a Sliding Window Approach}
 \usage{
-Query(timeseries, pattern.template, ruleset, window.length = 1.2 *
-  GetTimeLength(pattern.template), spearmans.rho.threshold = 0.7,
-  return.matched.patterns = FALSE)
+Query(timeseries, pattern.template, ruleset, distinctive.feature,
+  window.length = 1.2 * GetTimeLength(pattern.template),
+  spearmans.rho.threshold = 0.7, return.matched.patterns = FALSE)
 }
 \arguments{
 \item{timeseries}{The xts time series to be queried for the pattern}
@@ -14,7 +14,19 @@ Query(timeseries, pattern.template, ruleset, window.length = 1.2 *
 \item{pattern.template}{The xts time series that represents a template of the pattern being searched for}
 
 \item{ruleset}{Optional argument. A function of the form function(xts), which returns TRUE
-if the xts object matches the ruleset and false otherwise.}
+if the xts object matches the ruleset and FALSE otherwise.This is functionally identical to the
+distinctive.feature parameter, except that it is executed AFTER the PIPs and matching algorithms.
+Higher complexity rules should go here.}
+
+\item{distinctive.feature}{Optional argument. A function of the form function(xts), which
+returns TRUE if the xts object matches the distinctive feature and FALSE otherwise. If the xts
+object is found not to contain the distincitive feature, the sliding window will move to the
+next offset without executing the PIPs algorithm. This is functionally identical to the ruleset
+parameter, except that it is executed BEFORE the PIPs and matching algorithms. Providing a
+low-complexity function to check for a distinctive feature of the desired pattern prior to identifying PIPs
+can significantly decrease this algorithms run time. A quick and easy example of this might be to ensure
+the window exceeds some variance threshold. CAUTION: Providing a higher complexity function can result in
+increased run time.}
 
 \item{window.length}{A numeric length (in seconds) for the sliding window, which the pattern.template
 will be matched against. Defaults to 1.2 times the length of the template pattern.}
