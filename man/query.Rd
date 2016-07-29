@@ -19,9 +19,16 @@ will be matched against. Defaults to 1.2 times the length of the template patter
 \item{spearmans.rho.threshold}{The numeric threshold used for the Spearman's rho similarity coefficient.
 This values should above 0 and less than 1. Setting this values closer to 1 ensures that only
 very similar time series segments will match. Arbitrarily defaults to 0.7.}
+
+\item{return.matched.patterns}{A logical value. TRUE makes the algorithm return each window that matched
+as a list of xts objects. FALSE returns a 1 x 2 data frame with columns "Patterns" = Number of patterns
+found, and "Errors" = number of exceptions thrown by the GetPIPs function (e.g., incidences of there
+being too few data points found in the window to identify enough PIPs).
+Defaults to FALSE.}
 }
 \value{
-The number of matched patterns in the series
+Either a list of matched windows or a data frame containing the number of matches and
+errors, depending on the return.matched.patterns parameter.
 }
 \description{
 Queries a given time series using a sliding window and Spearman Ranking Correlation Coefficient for

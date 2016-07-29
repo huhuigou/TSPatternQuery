@@ -3,14 +3,6 @@
 library(RUnit)
 library(TSTestDataUtil)
 
-test.GetPerpDist <- function() {
-  three.points <- createCustomTimeSeries(c(0,2,0), c(2,2))
-  actual.perp.dist <- 2
-
-  test.perp.dist <-GetPerpDist(three.points[2], three.points[1], three.points[3])
-  RUnit::checkEquals(actual.perp.dist, test.perp.dist, msg = "The perp.dist calculation is incorrect for a simple example.")
-}
-
 test.GetPIPs <- function() {
   ts <- createCustomTimeSeries(
     c(1,-5,0,4,0,1,-6,1,0,0),
@@ -53,4 +45,12 @@ test.GetPIPs <- function() {
     ts[[10]]
     )
   checkEquals(actual.6, test.6)
+}
+
+test.GetPerpDist <- function() {
+  three.points <- createCustomTimeSeries(c(0,2,0), c(2,2))
+  actual.perp.dist <- 2
+
+  test.perp.dist <-GetPerpDist(three.points[2], three.points[1], three.points[3])
+  RUnit::checkEquals(actual.perp.dist, test.perp.dist, msg = "The perp.dist calculation is incorrect for a simple example.")
 }

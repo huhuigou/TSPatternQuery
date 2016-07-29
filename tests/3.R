@@ -5,9 +5,48 @@ library(TSTestDataUtil)
 
 test.Query <- function(){
 
-  #Run against the timeseries in TSTestDataUtil/TimeSeriesData
+  timeseries.long.intervals <- createCustomTimeSeries(
+    c(1,2,3,4,5,6,7),
+    c(60*60, 60*60, 60*60, 60*60, 60*60, 60*60)
+  )
+  timeseries.short.intervals <- createCustomTimeSeries(
+    c(1,2,3,4,5,6,7),
+    c(10, 10, 10, 10, 10, 10)
+  )
+  timeseries.var.zero <- createCustomTimeSeries(
+    c(2,2,2,2,2,2,2),
+    c(10, 10, 10, 10, 10, 10)
+  )
+  pattern <- createCustomTimeSeries(
+    c(1, 8, 5, 11, 5, 8, 1),
+    c(10, 10, 10, 10, 10, 10)
+  )
+  #Errors that should be caught: window too small and window var=0
+  checkTrue(Query(timeseries.long.intervals, pattern.template = pattern)[[1]] == 0)
+  checkTrue(Query(timeseries.var.zero, pattern.template = pattern)[[1]] == 0)
 
 
-  #Considers exceptions due to flat time series as false
+  #Errors that should be thrown: timeseries not xts, template.pattern not xts, spearmans.rho.threshold > 1,
+  #spearmans.rho.threshold < 0, template.pattern var=0
+  checkException(Query(c(1,2,3,4), pattern))
+  checkException(Query(timeseries.short.intervals, c(1,2,3,4)))
+  checkException(Query(timeseries.short.intervals, pattern, spearmans.rho.threshold = 1.1))
+  checkException(Query(timeseries.short.intervals, pattern, spearmans.rho.threshold = -1))
+  checkException(Query(timeseries.short.intervals, timeseries.var.zero))
+
+
+  #Output that should be returned: data.frame with number of patterns and erros when
+  #return.matched.patterns == FALSE, list of matched windows when return.matched.patterns == TRUE
+  timeseries.with.two.patterns <- createCustomTimeSeries(
+    c(0.9, 1.1, -0.99, 1.11, 2.1, 5.7, 4.3, 6.2, 4.1, 5.5, -2,
+      -.022, 0.1, 2, 2, 10.3, 5, 13.7, 6.2, 9.99, -2, 1, 3, 3.1),
+    c(7, 9, 9, 5, 8, 2, 10, 4, 7, 5, 7, 6, 7, 6, 4, 1, 5, 6, 10, 1, 8, 7, 3)
+  )
+
+  checkTrue(
+    length(
+      Query(timeseries.with.two.patterns, pattern, window.length = 50, return.matched.patterns = TRUE)
+    ) == 2
+  )
 
 }
