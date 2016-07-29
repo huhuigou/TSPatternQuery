@@ -11,7 +11,7 @@
 #'
 #'@param timeseries The xts time series within which PIPs will be identified
 #'@param num.pips A numeric for the number of PIPs to be identified
-#'@return A vector containing the indexes of the pips in the timeseries provided
+#'@return An xts time series containing the pips from the timeseries provided
 #'@export
 GetPIPs <- function(timeseries, num.pips) {
   stopifnot(num.pips <= length(timeseries))

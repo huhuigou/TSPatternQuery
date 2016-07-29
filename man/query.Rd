@@ -4,7 +4,7 @@
 \alias{Query}
 \title{Query A Time Series Using a Sliding Window Approach}
 \usage{
-Query(timeseries, pattern.template, window.length = 1.2 *
+Query(timeseries, pattern.template, ruleset, window.length = 1.2 *
   GetTimeLength(pattern.template), spearmans.rho.threshold = 0.7,
   return.matched.patterns = FALSE)
 }
@@ -12,6 +12,9 @@ Query(timeseries, pattern.template, window.length = 1.2 *
 \item{timeseries}{The xts time series to be queried for the pattern}
 
 \item{pattern.template}{The xts time series that represents a template of the pattern being searched for}
+
+\item{ruleset}{Optional argument. A function of the form function(xts), which returns TRUE
+if the xts object matches the ruleset and false otherwise.}
 
 \item{window.length}{A numeric length (in seconds) for the sliding window, which the pattern.template
 will be matched against. Defaults to 1.2 times the length of the template pattern.}

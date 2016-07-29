@@ -12,7 +12,7 @@ GetPIPs(timeseries, num.pips)
 \item{num.pips}{A numeric for the number of PIPs to be identified}
 }
 \value{
-A vector containing the indexes of the pips in the timeseries provided
+An xts time series containing the pips from the timeseries provided
 }
 \description{
 Perceptually Important Points (PIPs) are points that are perceptually important for the identification

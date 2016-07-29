@@ -9,6 +9,8 @@
 #'
 #'@param timeseries The xts time series to be queried for the pattern
 #'@param pattern.template The xts time series that represents a template of the pattern being searched for
+#'@param ruleset Optional argument. A function of the form function(xts), which returns TRUE
+#'if the xts object matches the ruleset and false otherwise.
 #'@param window.length A numeric length (in seconds) for the sliding window, which the pattern.template
 #'will be matched against. Defaults to 1.2 times the length of the template pattern.
 #'@param spearmans.rho.threshold The numeric threshold used for the Spearman's rho similarity coefficient.
@@ -25,6 +27,7 @@
 #'@export
 Query <- function(timeseries,
                   pattern.template,
+                  ruleset,
                   window.length = 1.2*GetTimeLength(pattern.template),
                   spearmans.rho.threshold = 0.7,
                   return.matched.patterns = FALSE
@@ -34,6 +37,9 @@ Query <- function(timeseries,
   stopifnot(is.xts(pattern.template))
   stopifnot(spearmans.rho.threshold > 0)
   stopifnot(spearmans.rho.threshold < 1)
+  if(!missing(ruleset)){
+    stopifnot(is.function(ruleset))
+  }
   if(var(pattern.template)==0){
     stop("The variance of the pattern.template cannot be 0 (e.g., all values cannot be identical).
          Please choose a pattern.template that is not completely flat .")
@@ -62,6 +68,9 @@ Query <- function(timeseries,
     }
 
     matches <- MatchPattern(pips, pattern.template, spearmans.rho.threshold)
+    if(!missing(ruleset) && !rulset(window)){
+      matches <- FALSE
+    }
     if(matches){
       num.patterns.found <- num.patterns.found+1
       if(return.matched.patterns) {
@@ -95,5 +104,37 @@ GetTimeLength <- function(timeseries){
   return(diff)
 }
 
+#' TODO: Make sure the below is properly cited, not sure if just copying documentation is enoug:
+#' @references
+#' demo(error.catching)
+#'
+##================================================================##
+###  In longer simulations, aka computer experiments,		         ###
+###  you may want to		                                         ###
+###  1) catch all errors and warnings (and continue)		         ###
+###  2) store the error or warning messages			                 ###
+###							                                                 ###
+###  Here's a solution	(see R-help mailing list, Dec 9, 2010):	 ###
+##================================================================##
 
+##' Catch *and* save both errors and warnings, and in the case of
+##' a warning, also keep the computed result.
+##'
+##' @title tryCatch both warnings (with value) and errors
+##' @param expr an \R expression to evaluate
+##' @return a list with 'value' and 'warning', where
+##'   'value' may be an error caught.
+##' @author Martin Maechler;
+##' Copyright (C) 2010-2012  The R Core Team
+tryCatch.W.E <- function(expr)
+{
+  W <- NULL
+  w.handler <- function(w){ # warning handler
+    W <<- w
+    invokeRestart("muffleWarning")
+  }
+  list(value = withCallingHandlers(tryCatch(expr, error = function(e) e),
+                                   warning = w.handler),
+       warning = W)
+}
 
