@@ -40,13 +40,58 @@ test.Query <- function(){
   timeseries.with.two.patterns <- createCustomTimeSeries(
     c(0.9, 1.1, -0.99, 1.11, 2.1, 5.7, 4.3, 6.2, 4.1, 5.5, -2,
       -.022, 0.1, 2, 2, 10.3, 5, 13.7, 6.2, 9.99, -2, 1, 3, 3.1),
-    c(7, 9, 9, 5, 8, 2, 10, 4, 7, 5, 7, 6, 7, 6, 4, 1, 5, 6, 10, 1, 8, 7, 3)
+    c(7, 9, 9, 5, 8, 2, 10, 4, 7, 5, 7, 6, 7, 6, 4, 4, 5, 6, 10, 1, 8, 7, 3)
   )
 
-  checkTrue(
+  checkEquals(
+    2,
     length(
       Query(timeseries.with.two.patterns, pattern, window.length = 50, return.matched.patterns = TRUE)
-    ) == 2
+    )
   )
+
+  #Matches should also match ruleset if provided: A ruleset that always returns TRUE should have no effect.
+  #A ruleset that always returns FALSE should result in 0 matches. A rulset that selects head and shoulders
+  #patterns where the middle peak is >10 should only select the window that fits that criteria.
+  ruleset.always.TRUE <- function(ts){
+    return(TRUE)
+  }
+  ruleset.always.FALSE <- function(ts){
+    return(FALSE)
+  }
+  ruleset.middle.peak.over.10 <- function(ts){
+    if(ts[[4]]>10){
+      return(TRUE)
+    }
+    return(FALSE)
+  }
+  checkEquals(
+    2,
+    Query(
+      timeseries.with.two.patterns,
+      pattern,
+      window.length = 50,
+      ruleset = ruleset.always.TRUE
+    )[[1]]
+  )
+  checkEquals(
+    0,
+    Query(
+      timeseries.with.two.patterns,
+      pattern,
+      window.length = 50,
+      ruleset = ruleset.always.FALSE
+    )[[1]]
+  )
+  checkEquals(
+    1,
+    Query(
+      timeseries.with.two.patterns,
+      pattern,
+      window.length = 50,
+      ruleset = ruleset.middle.peak.over.10
+    )[[1]]
+  )
+
 
 }

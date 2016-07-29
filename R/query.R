@@ -68,7 +68,7 @@ Query <- function(timeseries,
     }
 
     matches <- MatchPattern(pips, pattern.template, spearmans.rho.threshold)
-    if(!missing(ruleset) && !rulset(window)){
+    if(!missing(ruleset) && !ruleset(window)){
       matches <- FALSE
     }
     if(matches){
