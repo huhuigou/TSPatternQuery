@@ -19,14 +19,19 @@ distinctive.feature parameter, except that it is executed AFTER the PIPs and mat
 Higher complexity rules should go here.}
 
 \item{distinctive.feature}{Optional argument. A function of the form function(xts), which
-returns TRUE if the xts object matches the distinctive feature and FALSE otherwise. If the xts
+returns TRUE if the xts object matches the distinctive feature and FALSE otherwise. The xts parameter
+should be assumed to be the same length as the pattern.template (so if the pattern.template is length
+10, do not make a reference to xts[11] in the distinctive.feature function). If the xts
 object is found not to contain the distincitive feature, the sliding window will move to the
 next offset without executing the PIPs algorithm. This is functionally identical to the ruleset
 parameter, except that it is executed BEFORE the PIPs and matching algorithms. Providing a
 low-complexity function to check for a distinctive feature of the desired pattern prior to identifying PIPs
 can significantly decrease this algorithms run time. A quick and easy example of this might be to ensure
 the window exceeds some variance threshold. CAUTION: Providing a higher complexity function can result in
-increased run time.}
+increased run time.
+
+Note: that errors in the distinctive feature function will be caught since there is no gaurantee for irregular
+time series that enough points will be found within each window to satisfy this user-defined function.}
 
 \item{window.length}{A numeric length (in seconds) for the sliding window, which the pattern.template
 will be matched against. Defaults to 1.2 times the length of the template pattern.}

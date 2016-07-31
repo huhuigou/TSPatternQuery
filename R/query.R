@@ -14,7 +14,9 @@
 #'distinctive.feature parameter, except that it is executed AFTER the PIPs and matching algorithms.
 #'Higher complexity rules should go here.
 #'@param distinctive.feature Optional argument. A function of the form function(xts), which
-#'returns TRUE if the xts object matches the distinctive feature and FALSE otherwise. If the xts
+#'returns TRUE if the xts object matches the distinctive feature and FALSE otherwise. The xts parameter
+#'should be assumed to be the same length as the pattern.template (so if the pattern.template is length
+#'10, do not make a reference to xts[11] in the distinctive.feature function). If the xts
 #'object is found not to contain the distincitive feature, the sliding window will move to the
 #'next offset without executing the PIPs algorithm. This is functionally identical to the ruleset
 #'parameter, except that it is executed BEFORE the PIPs and matching algorithms. Providing a
@@ -22,6 +24,10 @@
 #'can significantly decrease this algorithms run time. A quick and easy example of this might be to ensure
 #'the window exceeds some variance threshold. CAUTION: Providing a higher complexity function can result in
 #'increased run time.
+#'
+#'Note: that errors in the distinctive feature function will be caught since there is no gaurantee for irregular
+#'time series that enough points will be found within each window to satisfy this user-defined function.
+#'
 #'@param window.length A numeric length (in seconds) for the sliding window, which the pattern.template
 #'will be matched against. Defaults to 1.2 times the length of the template pattern.
 #'@param spearmans.rho.threshold The numeric threshold used for the Spearman's rho similarity coefficient.
@@ -75,11 +81,27 @@ Query <- function(timeseries,
   while(i<length(timeseries)-length(pattern.template)){
     window.time.subset <- paste(time(timeseries[i]), "/" ,time(timeseries[i])+window.length, sep="" )
     window <- timeseries[window.time.subset]
-    #need to deal with possibility of error from not enough points for their function to work
-    if(!missing(distinctive.feature) && !distinctive.feature(window)){
-      i <- i+1
-      next()
+
+    #TODO: to deal with possibility of error from not enough points in window for their function to work
+    #in addition to other general errors from their function.
+
+
+    if(!missing(distinctive.feature)){
+      dist.feat.match <- tryCatch(
+        {
+          dist.feat.match <- distinctive.feature(window)
+        },
+        error=function(e){
+          return(e)
+        }
+      )
+
+      if(!dist.feat.match | inherits(dist.feat.match, "error")){
+        i <- i+1
+        next()
+      }
     }
+
     pips <- tryCatch(
       pips <- GetPIPs(window, length(pattern.template)),
       error=function(e){
@@ -93,7 +115,9 @@ Query <- function(timeseries,
     }
 
     matches <- MatchPattern(pips, pattern.template, spearmans.rho.threshold)
-    if(!missing(ruleset) && !ruleset(window)){
+
+    if(!missing(ruleset)
+       && !ruleset(window)){
       matches <- FALSE
     }
     if(matches){

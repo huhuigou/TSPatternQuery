@@ -93,5 +93,54 @@ test.Query <- function(){
     )[[1]]
   )
 
+  #Matches should also match distinctive.feature if provided, using the same conditions as for the
+  #ruleset parameter (above)
+  df.always.TRUE <- function(ts){
+    return(TRUE)
+  }
+  df.always.FALSE <- function(ts){
+    return(FALSE)
+  }
+  df.middle.peak.over.10 <- function(ts){
+    if(ts[[4]]>10){
+      return(TRUE)
+    }
+    return(FALSE)
+  }
+  checkEquals(
+    2,
+    Query(
+      timeseries.with.two.patterns,
+      pattern,
+      window.length = 50,
+      distinctive.feature = df.always.TRUE
+    )[[1]]
+  )
+  checkEquals(
+    0,
+    Query(
+      timeseries.with.two.patterns,
+      pattern,
+      window.length = 50,
+      distinctive.feature = df.always.FALSE
+    )[[1]]
+  )
+  checkEquals(
+    1,
+    Query(
+      timeseries.with.two.patterns,
+      pattern,
+      window.length = 50,
+      distinctive.feature = df.middle.peak.over.10
+    )[[1]]
+  )
+  #Errors in the distinctive feature function should be caught because their is no gaurantee of
+  #enough points being present within the window for the user's function to work, given that time
+  #series may be irregular.
+
+  #Errors in the rulset function should not be caught, because the number of pips has already been verified
+  #as sufficient for the template pattern by the GetPIPs function.
+
+
 
 }
