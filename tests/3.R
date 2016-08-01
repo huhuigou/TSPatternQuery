@@ -134,13 +134,32 @@ test.Query <- function(){
       distinctive.feature = df.middle.peak.over.10
     )[[1]]
   )
-  #Errors in the distinctive feature function should be caught because their is no gaurantee of
+  #Errors in the distinctive feature function should be caught because there is no gaurantee of
   #enough points being present within the window for the user's function to work, given that time
   #series may be irregular.
+  error <- function(ts){
+    stop("This is an error")
+  }
+
+  checkEquals(
+    0,
+    Query(
+      timeseries.with.two.patterns,
+      pattern,
+      window.length = 50,
+      distinctive.feature = error
+    )[[1]]
+  )
 
   #Errors in the rulset function should not be caught, because the number of pips has already been verified
   #as sufficient for the template pattern by the GetPIPs function.
-
-
+  checkException(
+    Query(
+      timeseries.with.two.patterns,
+      pattern,
+      window.length = 50,
+      ruleset = error
+    )
+  )
 
 }

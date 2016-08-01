@@ -10,18 +10,17 @@
 #'@param timeseries The xts time series to be queried for the pattern
 #'@param pattern.template The xts time series that represents a template of the pattern being searched for
 #'@param ruleset Optional argument. A function of the form function(xts), which returns TRUE
-#'if the xts object matches the ruleset and FALSE otherwise.This is functionally identical to the
-#'distinctive.feature parameter, except that it is executed AFTER the PIPs and matching algorithms.
+#'if the xts object matches the ruleset and FALSE otherwise.The xts parameter should be assumed to be the same length
+#'as the pattern.template (so if the pattern.template is length 10, do not make a reference to xts[11] in the distinctive.feature function)
+#'This is functionally identical to the distinctive.feature parameter, except that it is executed AFTER the PIPs and matching algorithms.
 #'Higher complexity rules should go here.
 #'@param distinctive.feature Optional argument. A function of the form function(xts), which
-#'returns TRUE if the xts object matches the distinctive feature and FALSE otherwise. The xts parameter
-#'should be assumed to be the same length as the pattern.template (so if the pattern.template is length
-#'10, do not make a reference to xts[11] in the distinctive.feature function). If the xts
+#'returns TRUE if the xts object matches the distinctive feature and FALSE otherwise. If the xts
 #'object is found not to contain the distincitive feature, the sliding window will move to the
 #'next offset without executing the PIPs algorithm. This is functionally identical to the ruleset
 #'parameter, except that it is executed BEFORE the PIPs and matching algorithms. Providing a
 #'low-complexity function to check for a distinctive feature of the desired pattern prior to identifying PIPs
-#'can significantly decrease this algorithms run time. A quick and easy example of this might be to ensure
+#'can significantly decrease run time. A quick and easy example of this might be to ensure
 #'the window exceeds some variance threshold. CAUTION: Providing a higher complexity function can result in
 #'increased run time.
 #'
@@ -72,7 +71,6 @@ Query <- function(timeseries,
          Please choose a pattern.template that is not completely flat .")
   }
 
-
   num.patterns.found <- 0
   num.errors <- 0
   patterns <- list()
@@ -81,10 +79,6 @@ Query <- function(timeseries,
   while(i<length(timeseries)-length(pattern.template)){
     window.time.subset <- paste(time(timeseries[i]), "/" ,time(timeseries[i])+window.length, sep="" )
     window <- timeseries[window.time.subset]
-
-    #TODO: to deal with possibility of error from not enough points in window for their function to work
-    #in addition to other general errors from their function.
-
 
     if(!missing(distinctive.feature)){
       dist.feat.match <- tryCatch(
@@ -96,7 +90,11 @@ Query <- function(timeseries,
         }
       )
 
-      if(!dist.feat.match | inherits(dist.feat.match, "error")){
+      if(inherits(dist.feat.match, "error")){
+        i <- i+1
+        next()
+      }
+      if(!dist.feat.match){
         i <- i+1
         next()
       }
@@ -116,6 +114,7 @@ Query <- function(timeseries,
 
     matches <- MatchPattern(pips, pattern.template, spearmans.rho.threshold)
 
+
     if(!missing(ruleset)
        && !ruleset(window)){
       matches <- FALSE
@@ -124,7 +123,6 @@ Query <- function(timeseries,
       num.patterns.found <- num.patterns.found+1
       if(return.matched.patterns) {
         patterns[[num.patterns.found]] <- window
-
       }
       i <- i+length(window)
     }
