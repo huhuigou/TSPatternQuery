@@ -57,7 +57,7 @@ Query <- function(timeseries,
   if(!missing(ruleset)){
     stopifnot(is.function(ruleset))
     stopifnot(
-      length(as.list(args(ruleset)))==2
+      length(as.list(args(ruleset)))==3
       )
   }
   if(!missing(distinctive.feature)){
@@ -116,7 +116,7 @@ Query <- function(timeseries,
 
 
     if(!missing(ruleset)
-       && !ruleset(window)){
+       && !ruleset(window, pips)){
       matches <- FALSE
     }
     if(matches){

@@ -53,14 +53,14 @@ test.Query <- function(){
   #Matches should also match ruleset if provided: A ruleset that always returns TRUE should have no effect.
   #A ruleset that always returns FALSE should result in 0 matches. A rulset that selects head and shoulders
   #patterns where the middle peak is >10 should only select the window that fits that criteria.
-  ruleset.always.TRUE <- function(ts){
+  ruleset.always.TRUE <- function(window, pips){
     return(TRUE)
   }
-  ruleset.always.FALSE <- function(ts){
+  ruleset.always.FALSE <- function(window, pips){
     return(FALSE)
   }
-  ruleset.middle.peak.over.10 <- function(ts){
-    if(ts[[4]]>10){
+  ruleset.middle.peak.over.10 <- function(window, pips){
+    if(window[[4]]>10){
       return(TRUE)
     }
     return(FALSE)
@@ -95,14 +95,14 @@ test.Query <- function(){
 
   #Matches should also match distinctive.feature if provided, using the same conditions as for the
   #ruleset parameter (above)
-  df.always.TRUE <- function(ts){
+  df.always.TRUE <- function(window){
     return(TRUE)
   }
-  df.always.FALSE <- function(ts){
+  df.always.FALSE <- function(window){
     return(FALSE)
   }
-  df.middle.peak.over.10 <- function(ts){
-    if(ts[[4]]>10){
+  df.middle.peak.over.10 <- function(window){
+    if(window[[4]]>10){
       return(TRUE)
     }
     return(FALSE)
@@ -137,7 +137,7 @@ test.Query <- function(){
   #Errors in the distinctive feature function should be caught because there is no gaurantee of
   #enough points being present within the window for the user's function to work, given that time
   #series may be irregular.
-  error <- function(ts){
+  df.error <- function(window){
     stop("This is an error")
   }
 
@@ -147,19 +147,22 @@ test.Query <- function(){
       timeseries.with.two.patterns,
       pattern,
       window.length = 50,
-      distinctive.feature = error
+      distinctive.feature = df.error
     )[[1]]
   )
 
   #Errors in the rulset function should not be caught, because the number of pips has already been verified
   #as sufficient for the template pattern by the GetPIPs function.
+  ruleset.error <- function(window, pips){
+    stop("This is an error")
+  }
+
   checkException(
     Query(
       timeseries.with.two.patterns,
       pattern,
       window.length = 50,
-      ruleset = error
+      ruleset = ruleset.error
     )
   )
-
 }
