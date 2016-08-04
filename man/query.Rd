@@ -4,7 +4,7 @@
 \alias{Query}
 \title{Query A Time Series Using a Sliding Window Approach}
 \usage{
-Query(timeseries, pattern.template, ruleset, distinctive.feature,
+Query(timeseries, pattern.template, distinctive.feature, ruleset,
   window.length = 1.2 * GetTimeLength(pattern.template),
   spearmans.rho.threshold = 0.7, return.matched.patterns = FALSE)
 }
@@ -12,12 +12,6 @@ Query(timeseries, pattern.template, ruleset, distinctive.feature,
 \item{timeseries}{The xts time series to be queried for the pattern}
 
 \item{pattern.template}{The xts time series that represents a template of the pattern being searched for}
-
-\item{ruleset}{Optional argument. A function of the form function(xts), which returns TRUE
-if the xts object matches the ruleset and FALSE otherwise.The xts parameter should be assumed to be the same length
-as the pattern.template (so if the pattern.template is length 10, do not make a reference to xts[11] in the distinctive.feature function)
-This is functionally identical to the distinctive.feature parameter, except that it is executed AFTER the PIPs and matching algorithms.
-Higher complexity rules should go here.}
 
 \item{distinctive.feature}{Optional argument. A function of the form function(xts), which
 returns TRUE if the xts object matches the distinctive feature and FALSE otherwise. If the xts
@@ -31,6 +25,12 @@ increased run time.
 
 Note: that errors in the distinctive feature function will be caught since there is no gaurantee for irregular
 time series that enough points will be found within each window to satisfy this user-defined function.}
+
+\item{ruleset}{Optional argument. A function of the form function(xts), which returns TRUE
+if the xts object matches the ruleset and FALSE otherwise.The xts parameter should be assumed to be the same length
+as the pattern.template (so if the pattern.template is length 10, do not make a reference to xts[11] in the distinctive.feature function)
+This is functionally identical to the distinctive.feature parameter, except that it is executed AFTER the PIPs and matching algorithms.
+Higher complexity rules should go here.}
 
 \item{window.length}{A numeric length (in seconds) for the sliding window, which the pattern.template
 will be matched against. Defaults to 1.2 times the length of the template pattern.}
@@ -52,6 +52,10 @@ errors, depending on the return.matched.patterns parameter.
 \description{
 Queries a given time series using a sliding window and Spearman Ranking Correlation Coefficient for
 similarity assessment between each window and a given pattern.
+}
+\details{
+This package has a comprehensive vignette. Use vignette("TSPatternQuery") to
+view the "long-form" documentation.
 }
 \references{
 Zhe Zhang, Jian Jiang, Xiaoyan Liu, Ricky Lau, Huaiqing Wang, and Rui Zhang. A real time hybrid pattern matching scheme for stock time series. In Proceedings of the Twenty-First Australasian Conference on Database Technologies - Volume 104, ADC ’10, pages 161–170, Darlinghurst, Australia, Australia, 2010. Australian Computer Society, Inc.
