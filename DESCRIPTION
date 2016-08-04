@@ -12,3 +12,6 @@ Imports:
     xts,
     RUnit
 RoxygenNote: 5.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
