@@ -20,8 +20,8 @@ TSQuery Tool applies a sliding window to the
 
 Be very explicit that PIP identification is the rate-limiting part of the algorithm (i.e. it is very slow, O(n^3)).
 
-##The Interface
-The TSQuery Tool may be accessed through the following function
+##User Interface
+The TSQuery Tool may be accessed through the following function:
 
 ```{r, fig.show='hold', eval=FALSE}
 Query <- function(timeseries,
@@ -31,43 +31,70 @@ Query <- function(timeseries,
                   window.length = 1.2*GetTimeLength(pattern.template),
                   spearmans.rho.threshold = 0.7,
                   return.matched.patterns = FALSE
-                  ) {
+                  ) 
 ```
-**Parameters:**
-```{r, fig.show='hold', eval=FALSE}
-timeseries
-```
-*timeseries* is the data being queried (i.e. the time series that may or may not contain patterns being searched for). It should be an xts time series object. *timeseries* can be of any length, and may be regular or irregular (time intervals betwen points do not have to be of the same length).
-```{r, fig.show='hold', eval=FALSE}
-pattern.template
-```
-The *pattern.template* is an xts time series that serves as the ideal representation of the pattern being searched for. The TSQuery Tool algoirhtm does not read times as absolute values. It only considers the time intervals (in seconds) between points. Thus, creating a *pattern.template* with times/dates that are far removed from the timeseries data is perfectly acceptable. In other words, a *pattern.template* with timestamps from 2016 will still match data from 1990, so long as the shape is sufficiently similar. In short, *pattern.template* should be an xts time series of the same shape as the pattern that is being searched for. It should also be of the same length (in seconds). Do not add any more points than necessary to create the shape of the pattern. This parameter pertains to template matching as discussed in [@Fu:2007:STS:1230165.1230538] and [@Zhang:2010:RTH:1862242.1862263].
+
+**timeseries**
+
+*timeseries* is the data being queried (i.e. the time series that may or may not contain the pattern being searched for). It should be an xts time series object. *timeseries* can be of any length, and may be regular or irregular (i.e. time intervals betwen points do not have to be of the same length).
+
+**pattern.template**
+
+The *pattern.template* is an xts time series that serves as a representation of the pattern being searched for. It should be the same length (in seconds) as the pattern, and consist of the minimum number of points necessary to create the pattern's shape.
+
+The TSQuery Tool algoirhtm does not read times as absolute values. It only considers the time intervals (in seconds) between points. Thus, using a *pattern.template* with times/dates that are far removed from the timeseries data is perfectly acceptable. In other words, a *pattern.template* with timestamps from 2016 will still match data from 1990, so long as the shape is sufficiently similar. 
+
+This parameter pertains to template matching as discussed in [@Fu:2007:STS:1230165.1230538] and [@Zhang:2010:RTH:1862242.1862263].
+
+**distinctive.feature**
+
+The *distincitve.feature* parameter accepts a function containing rules for ruleset based matching. It should accept one parameter, which will contain the current window in xts format. 
 
 ```{r, fig.show='hold', eval=FALSE}
 distinctive.feature <- function(window){}
 ```
-The *distincitve.feature* parameter accepts a function containing rules for ruleset based matching. It should accept one parameter, which will contain the current window in xts format. This function is run BEFORE PIP identification and template based matching, and thus may short circuit the algorithm if the current window does not contain the *distinctive.feature*. Proper use of the *distinictive.feature* parameter can signficantly decrease the time it takes for the algorithm to run, since it prevents the complex GetPIPs function from being called.
+
+This function is run BEFORE PIP identification and template based matching, and thus may short circuit the algorithm if the current window does not contain the *distinctive.feature*. Proper use of the *distinictive.feature* parameter can signficantly decrease the time it takes for the algorithm to run, since it prevents the complex GetPIPs function from being called.
 
 Errors originating in the user-defined distinctive.feature function will simply cause the window to move to the next offset, having not found a match. This is as opposed to causing the Query function to crash, and is done for the following reasons:
 
 1. To encourage the use of short, low-complexity functions.
 2. There is no gaurantee that enough data points have been found within the window to be able to index specific points (e.g. window[[4]] would be out of bounds for a window containing only 3 points) and it is assumed that many R users are not familiar with error handling. Instructing users that errors in their function will be counted as Match = FALSE has been chosen as a more user friendly alternative to requiring that users learn R's TryCatch syntax.
 
+Users are strongly recommended to test their distinctive.feature functions before using them with a large data set. See the Best Practices and Examples section below for more info on how to test these functions. 
+
+This is similar to ruleset matching as discussed in [@Fu:2007:STS:1230165.1230538] and [@Zhang:2010:RTH:1862242.1862263], however, with an emphasis on improving speed rather than accuracy.
+
+**ruleset**
+
+The *ruleset* parameter accepts a function containing rules for ruleset based matching. It should accept two parameters, which will contain the current window and identified PIPs respectively (both in xts format).
 
 ```{r, fig.show='hold', eval=FALSE}
 ruleset <- function(window, pips){}
 ```
-The *ruleset* parameter accepts a function containing rules for ruleset based matching.[@Zhang:2010:RTH:1862242.1862263] It should accept two parameters, which will contain the current window and identified PIPs respectively (both in xts format). This function is run AFTER PIP identification and template based matching. Unlike the *distinctive.feature* parameter, errors originating from this function WILL cause Query to crash. 
+
+This function is run AFTER PIP identification and template based matching. Unlike the *distinctive.feature* parameter, errors originating from this function WILL cause Query to crash. This is done for the following reasons:
+
+1. *ruleset* is considered a more advanced feature than *distinctive.feature* because it is meant to contain higher complexity rules. Therefore users are expected to employ proper error handling within their code.
+2. 
+
+
 
 Explain that ruleset is considered a more advanced feature, since higher complexity rules are expected here. Thus, users using this feature are expected to know TryCatch syntax.
+
+See [@Fu:2007:STS:1230165.1230538] and [@Zhang:2010:RTH:1862242.1862263] for ruleset matching.
+
+**window.length**
 ```{r, fig.show='hold', eval=FALSE}
 window.length = 1.2*GetTimeLength(pattern.template)
 ```
 
+**spearmans.rho.threshold**
 ```{r, fig.show='hold', eval=FALSE}
 spearmans.rho.threshold = 0.7
 ```
 
+**return.matched.patterns**
 ```{r, fig.show='hold', eval=FALSE}
 return.matched.patterns = FALSE
 ```
@@ -76,8 +103,18 @@ return.matched.patterns = FALSE
 
 
 
-##Tips and Tricks
+##Best Practices and Examples
 
+###Testing *distinctive.feature* and *ruleset* Functions
+Demonstrate creating several time series that should and should not satisfy a function and testing on that. Discuss RUnit as a more formal a rigid way to test functions, especially if they have multiple and/or complex functions and would like automated scripts to verify they still work every time they change something.
+
+###Simple *distinctive.feature* Examples
+
+###Simple *ruleset* Examples
+
+###Finding Optimal *window.length*
+
+###Finding Optimal *spearmans.rho.threshold*
 
 
 
