@@ -11,14 +11,25 @@ bibliography: ../bibliography.bib
 ---
 
 ##Introduction
-The Time Series Pattern Query Tool (henceforth referred to as the "TSQuery Tool" for short) is meant for quick exploration of time series data patterns, and is designed to be usable by individuals of varying skill. This package can be viewed as an implementation of the "real time hybrid pattern matching scheme" presented in [@Zhang:2010:RTH:1862242.1862263]. In short, this is a sliding window algorithm. Important points are identified within the window at each offset. They are then compared to a template of the desired pattern using spearman's rho as a similarity measure. Additional rules provided to the function may be used to increase accuracy, or to short circuit the algorithm in order to increase speed.
+The Time Series Pattern Query Tool (henceforth referred to as the "TSQuery Tool" for short) is meant for quick exploration of time series patterns, and is designed to be usable by individuals of varying skill. This package can be viewed as an implementation of the "real time hybrid pattern matching scheme" presented in [@Zhang:2010:RTH:1862242.1862263]. In short, this is a sliding window algorithm. Important points are identified within the window at each offset. They are then compared to a template of the desired pattern using spearman's rho as a similarity measure. Additional rules provided to the function may be used to increase accuracy, or to short circuit the algorithm in order to increase speed.
 
 The rest of this document will be laid out as follows. The first section will go into further detail explaining the underlying algorithm. The second section will present the Query function as the user interface of the TSQuery Tool and discuss how to use it's different parameters. This section will also briefly mention the CreateCustomTimeSeries function that has been provided to help the user in creating pattern templates. The last section will discuss best practices and present several examples that demonstrate where each parameter fits into said algorithm, and how they may be leveraged for optimal speed and accuracy.
 
 ##Algorithm
-TSQuery Tool applies a sliding window to the 
-
+<span style="color:red">TODO TSQuery Tool applies a sliding window...
 Be very explicit that PIP identification is the rate-limiting part of the algorithm (i.e. it is very slow, O(n^3)).
+</span>.
+
+Distinctive Feature
+
+Identify PIPs
+
+Template Matching Against Pattern
+
+Ruleset
+
+
+
 
 ##User Interface
 ###Query
@@ -74,45 +85,55 @@ The *ruleset* parameter accepts a function containing rules for ruleset based ma
 ruleset <- function(window, pips){}
 ```
 
-This function is run AFTER PIP identification and template based matching. Unlike the *distinctive.feature* parameter, errors originating from this function WILL cause Query to crash. This is done for the following reasons:
+This function is run AFTER PIP identification and template based matching. Unlike the *distinctive.feature* parameter, errors originating from this function WILL cause Query to crash. This is done for because *ruleset* is considered a more advanced feature than *distinctive.feature* since it is meant to contain higher complexity rules. Therefore users are expected to employ proper error handling within their code.
 
-1. *ruleset* is considered a more advanced feature than *distinctive.feature* because it is meant to contain higher complexity rules. Therefore users are expected to employ proper error handling within their code.
-2. 
-
-
-
-Explain that ruleset is considered a more advanced feature, since higher complexity rules are expected here. Thus, users using this feature are expected to know TryCatch syntax.
+Users are strongly recommended to test their distinctive.feature functions before using them with a large data set. See the Best Practices and Examples section below for more info on how to test these functions. 
 
 See [@Fu:2007:STS:1230165.1230538] and [@Zhang:2010:RTH:1862242.1862263] for ruleset matching.
 
 **window.length**
+The *window.length* parameter is a numeric that sets the length of the sliding window in seconds. This parameter defaults to 1.2 times the length of the pattern.template (again, in seconds). 
+
 ```{r, fig.show='hold', eval=FALSE}
 window.length = 1.2*GetTimeLength(pattern.template)
 ```
 
+Special attention should be paid to ensuring that the *window.length* is reasonable. If the *window.length* is too small, the pattern will not fit inside of it. If the *window.length* is too long, it is possible that the algorithm will not find the correct PIPs.
+
+
 **spearmans.rho.threshold**
+
+The *spearmans.rho.threshold* is the threshold used to define a match between the PIPs identified in the current window and the *pattern.template*. It is set to 0.7 by default. Note that this applies to template matching only.
+
 ```{r, fig.show='hold', eval=FALSE}
 spearmans.rho.threshold = 0.7
 ```
+
+A low *spearmans.rho.threshold* will cause the algorithm to be very permissive in what it considers a match. A high *spearmans.rho.threshold* will cause the algorithm to be more strict.
 
 **return.matched.patterns**
 ```{r, fig.show='hold', eval=FALSE}
 return.matched.patterns = FALSE
 ```
+*return.matched.patterns* acts as a flag. If TRUE, Query will return a list of matched windows. If FALSE, Query will return a <span style="color:red">data.frame containing the number of matches found.</span>
+
+<span style="color:red">TODO: Change this once output is finalized.</span>.
 
 ###CreateCustomTimeSeries
+The CreateCustomTimeSeries function has been provided to aid the user in creating pattern templates. It may also be used to easily create xts time series for the purpose of testing *distinctive.feature* and *ruleset* functions. CreateCustomTimeSeries takes two parameters. 
+The first is a vector of values for the time series (i.e. the y axis values). The second is a vector of time intervals (in seconds).
 ```{r, fig.show='hold', eval=FALSE}
 CreateCustomTimeSeries <- function(values, 
                                    intervals
                                    )
 ```
-
+The length of the intervals vector must be 1 less than that of the values vector If values <- c(1,2,3) and intervals <- c(5,6), then the interval between 1 and 2 will be 5 seconds, and the interval between 2 and 3 will be 6 seconds.
 
 
 ##Best Practices and Examples
 
 ###Testing *distinctive.feature* and *ruleset* Functions
-Demonstrate creating several time series that should and should not satisfy a function and testing on that. Discuss RUnit as a more formal a rigid way to test functions, especially if they have multiple and/or complex functions and would like automated scripts to verify they still work every time they change something.
+<span style="color:red"> TODO: Demonstrate creating several time series that should and should not satisfy a function and testing on that. Discuss RUnit as a more formal a rigid way to test functions, especially if they have multiple and/or complex functions and would like automated scripts to verify they still work every time they change something.<span>
 
 ###Simple *distinctive.feature* Examples
 
@@ -122,57 +143,4 @@ Demonstrate creating several time series that should and should not satisfy a fu
 
 ###Finding Optimal *spearmans.rho.threshold*
 
-
-
-
-#The Vignette template (TODO: delete once finished)
-
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
-
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
-
-## Vignette Info
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
-```
-
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
-```
-
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
-
-#References
+##References
