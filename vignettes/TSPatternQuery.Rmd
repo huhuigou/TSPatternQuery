@@ -13,7 +13,7 @@ bibliography: ../bibliography.bib
 ##Introduction
 The Time Series Pattern Query Tool (henceforth referred to as the "TSQuery Tool" for short) is meant for quick exploration of time series data patterns, and is designed to be usable by individuals of varying skill. This package can be viewed as an implementation of the "real time hybrid pattern matching scheme" presented in [@Zhang:2010:RTH:1862242.1862263]. In short, this is a sliding window algorithm. Important points are identified within the window at each offset. They are then compared to a template of the desired pattern using spearman's rho as a similarity measure. Additional rules provided to the function may be used to increase accuracy, or to short circuit the algorithm in order to increase speed.
 
-The rest of this document will be laid out as follows. The first section will go into further detail explaining the underlying algorithm. The second section will present the Query function as the user interface of the TSQuery Tool and discuss how to use it's different parameters. The last section will present several examples that demonstrate where each parameter fits into said algorithm, and how they may be leveraged for optimal speed and accuracy.
+The rest of this document will be laid out as follows. The first section will go into further detail explaining the underlying algorithm. The second section will present the Query function as the user interface of the TSQuery Tool and discuss how to use it's different parameters. This section will also briefly mention the CreateCustomTimeSeries function that has been provided to help the user in creating pattern templates. The last section will discuss best practices and present several examples that demonstrate where each parameter fits into said algorithm, and how they may be leveraged for optimal speed and accuracy.
 
 ##Algorithm
 TSQuery Tool applies a sliding window to the 
@@ -21,6 +21,7 @@ TSQuery Tool applies a sliding window to the
 Be very explicit that PIP identification is the rate-limiting part of the algorithm (i.e. it is very slow, O(n^3)).
 
 ##User Interface
+###Query
 The TSQuery Tool may be accessed through the following function:
 
 ```{r, fig.show='hold', eval=FALSE}
@@ -99,7 +100,12 @@ spearmans.rho.threshold = 0.7
 return.matched.patterns = FALSE
 ```
 
-
+###CreateCustomTimeSeries
+```{r, fig.show='hold', eval=FALSE}
+CreateCustomTimeSeries <- function(values, 
+                                   intervals
+                                   )
+```
 
 
 
