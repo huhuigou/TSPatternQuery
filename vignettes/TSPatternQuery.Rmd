@@ -152,7 +152,32 @@ The length of the intervals vector must be 1 less than that of the values vector
 ###Testing *distinctive.feature* and *ruleset* Functions
 <span style="color:red"> TODO: Demonstrate creating several time series that should and should not satisfy a function and testing on that. Discuss RUnit as a more formal a rigid way to test functions, especially if they have multiple and/or complex functions and would like automated scripts to verify they still work every time they change something.<span>
 
+Conditions to test for
+1. Does it return TRUE when its supposed to
+2. Does it return FALSE when its supposed to
+3. Are there any situations in which it might return NA? This will be counted as FALSE by the algorithm. Is this desireable?
+4. Are there any situations in which it might throw an Error? This will be counted as FALSE by the algorithm. Is this desireable?
+
 ###Simple *distinctive.feature* Examples
+```{r, fig.show='hold', eval=FALSE}
+
+no.low.var <- function(window){
+  return(var(window)>2)
+}
+increasing <- function(window){
+  return( mean(diff(as.vector(window))) > 0 )
+}
+increasing.monotonically <- function(window){
+  return(all(window == cummax(window)))
+}
+decreasing <- function(window){
+  return( mean(diff(as.vector(window))) < 0 )
+}
+decreasing.monotonically <- function(window){
+  return(all(window == cummin(window)))
+}
+
+```
 
 ###Simple *ruleset* Examples
 

@@ -165,4 +165,19 @@ test.Query <- function(){
       ruleset = ruleset.error
     )
   )
+
+  #Query should not crash when distinctive.feature returns NA
+  return.NA <- function(window){
+    return(NA)
+  }
+
+  checkEquals(
+    0,
+    Query(
+      timeseries.with.two.patterns,
+      pattern,
+      window.length = 50,
+      distinctive.feature = return.NA
+    )[[1]]
+  )
 }

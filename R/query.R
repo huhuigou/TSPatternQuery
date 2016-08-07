@@ -93,7 +93,7 @@ Query <- function(timeseries,
         }
       )
 
-      if(inherits(dist.feat.match, "error")){
+      if(inherits(dist.feat.match, "error") | is.na(dist.feat.match)){
         i <- i+1
         next()
       }
