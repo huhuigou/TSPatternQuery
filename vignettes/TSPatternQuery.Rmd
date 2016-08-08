@@ -12,6 +12,8 @@ bibliography: ../bibliography.bib
 
 ```{r, fig.show='hide', include=FALSE}
 library(TSPatternQuery)
+library(xts)
+library(zoo)
 ```
 ##Introduction
 The Time Series Pattern Query Tool (henceforth referred to as the "TSQuery Tool" for short) is meant for quick exploration of time series patterns, and is designed to be usable by individuals of varying skill. This package can be viewed as an implementation of the "real time hybrid pattern matching scheme" presented in [@Zhang:2010:RTH:1862242.1862263]. In short, this is a sliding window algorithm. Important points are identified within the window at each offset. They are then compared to a template of the desired pattern using spearman's rho as a similarity measure. Additional rules provided to the function may be used to increase accuracy, or to short circuit the algorithm in order to increase speed.
@@ -30,7 +32,7 @@ If the points within the window are found to match the *distinctive feature* and
 
 **Note that PIP identification is a highly complex algorithm, meaning that it is very slow.** The purpose of the *distinctive feature* function is to stop the algorithm before it reaches PIP identification, thus making it run faster. See below for an example of PIPs identification.
 
-```{r, fig.show='hold', eval=TRUE,out.width='47%'}
+```{r, fig.show='hold', eval=TRUE, out.width='47%'}
 
 head.and.shoulders <-   CreateCustomTimeSeries(
      c(1, 3, 2, 4, 4, 7, 3, 3.1, 5.5, 10, 9.8, 9.9, 6, 4, 6.5, 6, 5.8, 1),
@@ -159,24 +161,95 @@ Conditions to test for
 4. Are there any situations in which it might throw an Error? This will be counted as FALSE by the algorithm. Is this desireable?
 
 ###Simple *distinctive.feature* Examples
+
+Below are several examples of simple functions that may be passed to the distinctive.feature parameter in order to reduce the run time of the algorithm.
+
+**No low variance**
+Checking that the variance is above a certain threshold is particularly useful when most of the time series is fairly constant, or the pattern has values that occur outisde of a reference range of some sort.
 ```{r, fig.show='hold', eval=FALSE}
 
 no.low.var <- function(window){
-  return(var(window)>2)
+  var.threshold <- 2
+  return(var(window)>var.threshold)
 }
+```
+
+```{r, eval=TRUE, fig.align='center',fig.show='hold'}
+ts.with.low.var <- CreateCustomTimeSeries(
+     c(sample(-2.0:2.0, 50, replace = T),
+     c(-6, 5, -2, 7, -2, 5, -6),
+     sample(-2.0:2.0, 50, replace=T)),
+     seq(from=5,to=5, length.out = 106)
+)
+plot(ts.with.low.var)
+```
+
+```{r, eval=TRUE,fig.show='hold', out.width='47%'}
+#Selet the threshold by finding the variance of a section where the pattern is not present
+threshold <- var(ts.with.low.var[1:50])
+no.low.var <- function(window){
+  return(var(window)>threshold)
+}
+
+pattern <- CreateCustomTimeSeries(
+    c(1, 7, 5, 9, 5, 7, 1),
+    seq(from=5,to=5,length.out = 6)
+)
+plot(pattern, main="Pattern Template")
+
+plot(
+  Query(
+    ts.with.low.var,
+    pattern,
+    window.length = 40,
+    distinctive.feature = no.low.var,
+    
+    return.matched.patterns = T
+  )[[1]], 
+  main="Window Matching Pattern"
+)
+```
+
+**Increasing (On Average)**
+```{r, fig.show='hold', eval=FALSE}
+
 increasing <- function(window){
   return( mean(diff(as.vector(window))) > 0 )
 }
+```
+
+**Increasing (Every point is greater than its predecessor)**
+```{r, fig.show='hold', eval=FALSE}
+
 increasing.monotonically <- function(window){
   return(all(window == cummax(window)))
 }
+```
+TODO: provide link to stack overflow
+**Decreasing (On Average)**
+```{r, fig.show='hold', eval=FALSE}
+
 decreasing <- function(window){
   return( mean(diff(as.vector(window))) < 0 )
 }
+```
+
+**Decreasing (Every point is less than its predecessor)**
+```{r, fig.show='hold', eval=FALSE}
+
 decreasing.monotonically <- function(window){
   return(all(window == cummin(window)))
 }
+```
+TODO: provide link to stack overflow
 
+```{r, fig.show='hold', eval=FALSE}
+within.range <- function(window){
+  ceiling <- 5
+  floor <- -5
+  
+  return ( all(window < ceiling) && all(window > floor))
+}
 ```
 
 ###Simple *ruleset* Examples
