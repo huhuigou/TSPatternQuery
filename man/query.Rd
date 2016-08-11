@@ -11,7 +11,9 @@ Query(timeseries, pattern.template, distinctive.feature, ruleset,
 \arguments{
 \item{timeseries}{The xts time series to be queried for the pattern}
 
-\item{pattern.template}{The xts time series that represents a template of the pattern being searched for}
+\item{pattern.template}{The xts time series that represents a template of the pattern being searched for. The first and
+last points in pattern.template (the endpoints) must be estimations of the time series BEFORE and AFTER the pattern has
+occured, otherwise it will not match.}
 
 \item{distinctive.feature}{Optional argument. A function of the form function(xts), which
 returns TRUE if the xts object matches the distinctive feature and FALSE otherwise. If the xts

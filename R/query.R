@@ -11,7 +11,9 @@
 #'
 #'
 #'@param timeseries The xts time series to be queried for the pattern
-#'@param pattern.template The xts time series that represents a template of the pattern being searched for
+#'@param pattern.template The xts time series that represents a template of the pattern being searched for. The first and
+#'last points in pattern.template (the endpoints) must be estimations of the time series BEFORE and AFTER the pattern has
+#'occured, otherwise it will not match.
 #'@param ruleset Optional argument. A function of the form function(xts), which returns TRUE
 #'if the xts object matches the ruleset and FALSE otherwise.The xts parameter should be assumed to be the same length
 #'as the pattern.template (so if the pattern.template is length 10, do not make a reference to xts[11] in the distinctive.feature function)
@@ -93,7 +95,7 @@ Query <- function(timeseries,
         }
       )
 
-      if(inherits(dist.feat.match, "error") | is.na(dist.feat.match)){
+      if(inherits(dist.feat.match, "error") || is.na(dist.feat.match)){
         i <- i+1
         next()
       }

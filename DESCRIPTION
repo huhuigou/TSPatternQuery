@@ -1,11 +1,11 @@
 Package: TSPatternQuery
 Type: Package
-Title: What the Package Does (Title Case)
+Title: A Time Series Pattern Query Tool Using PIPs and Hybrid Template-Ruleset Matching
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Joshua Anthony Marsh
+Maintainer: Joshua Anthony Marsh <joshanthonymarsh@gmail.com>
+Description: Allows for the querying of time series for patterns. TSPatternQuery is a slightly modified implementation of <http://dl.acm.org/citation.cfm?id=1862263>. This is a sliding window algorithm. Important points are identified within the window at each offset. They are then compared to a template of the desired pattern using spearman's rho as a similarity measure. Additional rules provided to the function may be used to increase accuracy, or to short circuit the algorithm in order to increase speed.
+License: MIT
 LazyData: TRUE
 Imports:
     zoo,

@@ -3,6 +3,7 @@
 export(CreateCustomTimeSeries)
 export(GetPIPs)
 export(GetPerpDist)
+export(GetWindowVariancePDF)
 export(MatchPattern)
 export(Query)
 import(xts)
