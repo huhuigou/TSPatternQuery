@@ -50,7 +50,7 @@ Query <- function(timeseries,
                   pattern.template,
                   distinctive.feature,
                   ruleset,
-                  window.length = 1.2*GetTimeLength(pattern.template),
+                  window.length = 1.2*GetLengthInSeconds(pattern.template),
                   spearmans.rho.threshold = 0.7,
                   return.matched.patterns = FALSE
                   ) {
@@ -149,7 +149,7 @@ Query <- function(timeseries,
 #'
 #' @param timeseries An xts timeseries
 #' @return The numeric length of the time series in seconds.
-GetTimeLength <- function(timeseries){
+GetLengthInSeconds <- function(timeseries){
   t1.num <- as.numeric(time(timeseries[1]))
   t2.num <- as.numeric(time(timeseries[length(timeseries)]))
   diff <- t2.num - t1.num

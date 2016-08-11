@@ -27,22 +27,22 @@ library(zoo)
 
 
 #Introduction
-The Time Series Pattern Query Tool (henceforth referred to as the "TSQuery Tool" for short) is meant for quick exploration of time series patterns, and is designed to be usable by individuals of varying skill. This package can be viewed as an implementation of the "real time hybrid pattern matching scheme" presented in [@Zhang:2010:RTH:1862242.1862263]. In short, this is a sliding window algorithm. Important points are identified within the window at each offset. They are then compared to a template of the desired pattern using spearman's rho as a similarity measure. Additional rules provided to the function may be used to increase accuracy, or to short circuit the algorithm in order to increase speed.
+The Time Series Pattern Query Tool (henceforth referred to as the "TSPatternQuery" for short) is meant for quick exploration of time series patterns, and is designed to be usable by individuals of varying skill. This package can be viewed as an implementation of the "real time hybrid pattern matching scheme" presented in [@Zhang:2010:RTH:1862242.1862263]. In short, this is a sliding window algorithm. Important points are identified within the window at each offset. They are then compared to a template of the desired pattern using spearman's rho as a similarity measure. Additional rules provided to the function may be used to increase accuracy, or to short circuit the algorithm in order to increase speed.
 
-The rest of this document will be laid out as follows. The first section will go into further detail explaining the underlying algorithm. The second section will present the Query function as the user interface of the TSQuery Tool and discuss how to use it's different parameters. This section will also briefly mention the CreateCustomTimeSeries function that has been provided to help the user in creating pattern templates. The last section will discuss best practices and present several examples that demonstrate where each parameter fits into said algorithm, and how they may be leveraged for optimal speed and accuracy.
+The rest of this document will be laid out as follows. The first section will go into further detail explaining the underlying algorithm. The second section will present present the different functions made available through the TSPatternQuery. This section will also briefly mention the CreateCustomTimeSeries function that has been provided to help the user in creating pattern templates. The last section will discuss best practices and provide examples.
 
 #Algorithm
-The TSQuery Tool matching algorithm takes as its input a time series (the data), a pattern represented as a second shorter time series, and (optionally) some additional rules that help describe the desired pattern. These rules are contained within a *distinctive feature* function and a *ruleset* function. Additional inputs may be used to specify the length of the sliding window and the spearman rho threshold used for template matching, however these are less critical to understanding the algorithm, and will be discussed in the next section.
+The TSPatternQuery matching algorithm takes as its input a time series (the data), a pattern represented as a second shorter time series, and (optionally) some additional rules that help describe the desired pattern. These rules are contained within a *distinctive feature* function and a *ruleset* function. Additional inputs may be used to specify the length of the sliding window and the spearman rho threshold used for template matching, however these are less critical to understanding the algorithm, and will be discussed in the next section.
 
-At a given offset of the sliding window, the first step is identifying all of the points within the window. Note that the window length is defined in seconds, not number of points. 
+1. At a given offset of the sliding window, the first step is identifying all of the points within the window. Note that the window length is defined in seconds, not number of points. 
 
-This subset of the overall time series is then checked against the rules contained within the *distinctive feature* function. If it does not match the *distinctive feature*, the window moves by one point and matching starts over.
+2. This subset of the overall time series is then checked against the rules contained within the *distinctive feature* function. If it does not match the *distinctive feature*, the window moves by one point and matching starts over.
 
-If the points within the window are found to match the *distinctive feature* and there are at least as many points within the window as their are in the pattern template, then "perceptually important points" (PIPs) are identified. PIPs are points that are likely to be structurally important in forming the shape of any patterns within the data. TSQuery Tool uses the perpendicular distance method for PIP identification. Refer to [@Fu:2007:STS:1230165.1230538] for more information on PIPs. The number of PIPs identified is equal to the number of points that make up the pattern template.
+3. If the points within the window are found to match the *distinctive feature* and there are at least as many points within the window as their are in the pattern template, then "perceptually important points" (PIPs) are identified. PIPs are points that are likely to be important in forming the shape of any patterns within the data. TSPatternQuery uses the perpendicular distance method for PIP identification. Refer to [@Fu:2007:STS:1230165.1230538] for more information on PIPs. The number of PIPs identified is equal to the number of points that make up the pattern template. **It is important that the endpoints of the pattern are estimates of the time series before and after the pattern has occurred.** This is because the PIP identification algorithm always identifies the first and last points of each window as PIPs. Since window length is meant to be longer than the length of the pattern, this generally results in the PIP endpoints not actually being part of the pattern itself.
 
 **Note that PIP identification is a highly complex algorithm, meaning that it is very slow.** The purpose of the *distinctive feature* function is to stop the algorithm before it reaches PIP identification, thus making it run faster. See below for an example of PIPs identification.
 
-```{r, fig.show='hold', eval=TRUE, out.width='47%'}
+```{r, fig.show='hold', eval=TRUE, out.width='50%'}
 
 head.and.shoulders <-   CreateCustomTimeSeries(
      c(1, 3, 2, 4, 4, 7, 3, 3.1, 5.5, 10, 9.8, 9.9, 6, 4, 6.5, 6, 5.8, 1),
@@ -56,13 +56,15 @@ plot( GetPIPs(head.and.shoulders, 7), main = "PIPs" )
 
 ```
 
-PIPs are then compared to the pattern template using Spearman's rank correlation coefficient. If Spearman's rho is below a certain threshold, then the window moves to the next offset and matching starts over. Otherwise, the window and pips are checked against rules contained within the *ruleset* function. If they the window and pips satisfy the *ruleset*, then the window is counted as a match.
+4. PIPs are then compared to the pattern template using Spearman's rank correlation coefficient. If Spearman's rho is below a certain threshold, then the window moves to the next offset and matching starts over. Spearman's rho works by ranking the values within the two sequences and then calculating the correlation between said ranks. Therefore, actual values do not matter during template matching, only their ranks relative to one another. For example, a pattern with values [15, 20, 25] will be ranked [1,2,3] and will have a Spearman's rho of 1 when compared with any other sequence of numbers that are ranked [1,2,3].
 
-See [@Zhang:2010:RTH:1862242.1862263] for a more detailed description of the algorithm used by TSQuery Tool. The only significant difference is that TSQuery Tool's usage of *distinctive feature* prior to PIP identification and template matching.
+5. If the Spearman's rho is above the threshold, the window and pips are then checked against rules contained within the *ruleset* function. If the window and pips satisfy the *ruleset*, then the window is counted as a match. The ruleset is intended to hold rules that are higher complexity and therefore run more slowly. The purpose of the ruleset is to improve accuracy (as opposed to speed).
+
+See [@Zhang:2010:RTH:1862242.1862263] for a more detailed description of the hybrid matching algorithm that TSPatternQuery is based on. The only significant difference is the addition of *distinctive feature* prior to PIP identification and template matching.
 
 #Functions
 ##Query
-The TSQuery Tool may be accessed through the following function:
+The TSPatternQuery may be accessed through the following function:
 
 ```{r, fig.show='hold', eval=FALSE}
 Query <- function(timeseries,
@@ -81,34 +83,46 @@ Query <- function(timeseries,
 
 ###*pattern.template*
 
-The *pattern.template* is an xts time series that serves as a representation of the pattern being searched for. It should be the same length (in seconds) as the pattern, and consist of the minimum number of points necessary to create the pattern's shape. The first and last points in pattern.template (the endpoints) must be estimations of the time series BEFORE and AFTER the pattern has occured, otherwise it will not match. For example, if the time series is normally constrained between 1 and -1, but the pattern contains points outside of this range, the endpoints of pattern.template should both be between 1 and -1.
+The *pattern.template* is an xts time series that serves as a representation of the pattern being searched for. It should be the same length (in seconds) as the pattern is estimated to be, and consist of the minimum number of points necessary to create the pattern's shape. The first and last points in pattern.template (the endpoints) must be estimations of the time series BEFORE and AFTER the pattern has occured, otherwise it will liekly not match. For example, if the time series is normally constrained between 1 and -1, but the pattern contains points outside of this range, then a good value for the *pattern.template* endpoints would likely be 0.5.
 
-The TSQuery Tool algoirhtm does not read times as absolute values. It only considers the time intervals (in seconds) between points. Thus, using a *pattern.template* with times/dates that are far removed from the timeseries data is perfectly acceptable. In other words, a *pattern.template* with timestamps from 2016 will still match data from 1990, so long as the shape is sufficiently similar. 
+The TSPatternQuery algoirhtm does not read times as absolute values. It only considers the time intervals (in seconds) between points. Thus, using a *pattern.template* with times/dates that are far removed from the timeseries data is perfectly acceptable. In other words, a *pattern.template* with timestamps from 2016 will still match data from 1990, so long as the shape is sufficiently similar. 
 
-This parameter pertains to template matching as discussed in [@Fu:2007:STS:1230165.1230538] and [@Zhang:2010:RTH:1862242.1862263].
+Similarly, actual values do not matter on the y-axis (only their ranks) because template matching uses Spearman's rho. See part 4 of the algorithm in section 2 for more information.
+
+See [@Fu:2007:STS:1230165.1230538] and [@Zhang:2010:RTH:1862242.1862263] for more on template matching.
 
 ###*distinctive.feature*
 
 The *distincitve.feature* parameter accepts a function containing rules for ruleset based matching. It should accept one parameter, which will contain the current window in xts format. 
 
 ```{r, fig.show='hold', eval=FALSE}
-distinctive.feature <- function(window){}
+distinctive.feature <- function(window){
+  
+  Window.Matches.Distinctive.Feature <- #Some Expression
+    
+  if( Window.Matches.Distinctive.Feature ){
+    return(TRUE)
+  }
+  else{
+    return(FALSE)
+  }
+}
 ```
 
-This function is run BEFORE PIP identification and template based matching, and thus may short circuit the algorithm if the current window does not contain the *distinctive.feature*. Proper use of the *distinictive.feature* parameter can signficantly decrease the time it takes for the algorithm to run, since it prevents the complex GetPIPs function from being called.
+This function is run PRIOR to PIP identification and template based matching. If the current window does not contain match the *distinctive.feature*, then the algorithm will move on to the next window with identifying PIPs. Proper use of the *distinictive.feature* parameter can signficantly decrease the time it takes for the algorithm to run, since it prevents the slow GetPIPs function from being called.
 
-Errors originating in the user-defined distinctive.feature function will simply cause the window to move to the next offset, having not found a match. This is as opposed to causing the Query function to crash, and is done for the following reasons:
+Errors originating from the user-defined *distinctive.feature* function will simply cause the window to move to the next offset, having not found a match. This is as opposed to causing the Query function to crash, and is done for the following reasons:
 
 1. To encourage the use of short, low-complexity functions.
 2. There is no gaurantee that enough data points have been found within the window to be able to index specific points (e.g. window[[4]] would be out of bounds for a window containing only 3 points) and it is assumed that many R users are not familiar with error handling. Instructing users that errors in their function will be counted as Match = FALSE has been chosen as a more user friendly alternative to requiring that users learn R's TryCatch syntax.
 
-Users are strongly recommended to test their distinctive.feature functions before using them with a large data set. See the Best Practices and Examples section below for more info on how to test these functions. 
+Users are strongly recommended to test their *distinctive.feature* functions before using them with a large data set. See the Best Practices and Examples section below for more info on how to test these functions. 
 
 This is similar to ruleset matching as discussed in [@Fu:2007:STS:1230165.1230538] and [@Zhang:2010:RTH:1862242.1862263], however, with an emphasis on improving speed rather than accuracy.
 
 ###*ruleset*
 
-The *ruleset* parameter accepts a function containing rules for ruleset based matching. It should accept two parameters, which will contain the current window and identified PIPs respectively (both in xts format).
+The *ruleset* parameter accepts a function containing rules for ruleset based matching. It should accept two parameters, which will contain the raw window and PIPs from said window respectively (both in xts format).
 
 ```{r, fig.show='hold', eval=FALSE}
 ruleset <- function(window, pips){}
@@ -116,23 +130,25 @@ ruleset <- function(window, pips){}
 
 This function is run AFTER PIP identification and template based matching. Unlike the *distinctive.feature* parameter, errors originating from this function WILL cause Query to crash. This is done for because *ruleset* is considered a more advanced feature than *distinctive.feature* since it is meant to contain higher complexity rules. Therefore users are expected to employ proper error handling within their code.
 
-Users are strongly recommended to test their distinctive.feature functions before using them with a large data set. See the Best Practices and Examples section below for more info on how to test these functions. 
+Users are strongly recommended to test their *ruleset* functions before using them with a large data set. See the Best Practices and Examples section below for more info on how to test these functions. 
 
 See [@Fu:2007:STS:1230165.1230538] and [@Zhang:2010:RTH:1862242.1862263] for ruleset matching.
 
 ###*window.length*
-The *window.length* parameter is a numeric that sets the length of the sliding window in seconds. This parameter defaults to 1.2 times the length of the pattern.template (again, in seconds). 
+
+The *window.length* parameter is a numeric that sets the length of the sliding window in seconds. It should be slightly longer than the pattern is expected to be. This parameter defaults to 1.2 times the length of the pattern.template (in seconds). 
 
 ```{r, fig.show='hold', eval=FALSE}
-window.length = 1.2*GetTimeLength(pattern.template)
+window.length = 1.2*GetLengthInSeconds(pattern.template)
 ```
 
 Special attention should be paid to ensuring that the *window.length* is reasonable. If the *window.length* is too small, the pattern will not fit inside of it. If the *window.length* is too long, it is possible that the algorithm will not find the correct PIPs.
 
+*window.length* is the most sensitive parameter as it can greatly effect the PIPs that are identified. Adjusting the window length is a good first step to try when Query is not finding expected patterns.
 
 ###*spearmans.rho.threshold*
 
-The *spearmans.rho.threshold* is the threshold used to define a match between the PIPs identified in the current window and the *pattern.template*. It is set to 0.7 by default. Note that this applies to template matching only.
+*spearmans.rho.threshold* is the threshold used to define a match between the PIPs identified in the current window and the *pattern.template*. It is set to 0.7 by default. Note that this applies to template matching only.
 
 ```{r, fig.show='hold', eval=FALSE}
 spearmans.rho.threshold = 0.7
@@ -141,21 +157,16 @@ spearmans.rho.threshold = 0.7
 A low *spearmans.rho.threshold* will cause the algorithm to be very permissive in what it considers a match. A high *spearmans.rho.threshold* will cause the algorithm to be more strict.
 
 ###*return.matched.patterns*
+
+*return.matched.patterns* acts as a flag. If TRUE, Query will return a list of matched windows. If FALSE, Query will return a data.frame containing the number of matches found.
+
 ```{r, fig.show='hold', eval=FALSE}
 return.matched.patterns = FALSE
 ```
-*return.matched.patterns* acts as a flag. If TRUE, Query will return a list of matched windows. If FALSE, Query will return a <span style="color:red">data.frame containing the number of matches found.</span>
 
-<span style="color:red">TODO: Change this once output is finalized.</span>.
+*return.matched.patterns* is set to false by default
 
 ##CreateCustomTimeSeries
-
-
-
-TODO: Have parameter subsections to match format used in Query
-
-
-
 
 The CreateCustomTimeSeries function has been provided to aid the user in creating pattern templates. It may also be used to easily create xts time series for the purpose of testing *distinctive.feature* and *ruleset* functions. CreateCustomTimeSeries takes two parameters. 
 The first is a vector of values for the time series (i.e. the y axis values). The second is a vector of time intervals (in seconds).
@@ -164,15 +175,70 @@ CreateCustomTimeSeries <- function(values,
                                    intervals
                                    )
 ```
-The length of the intervals vector must be 1 less than that of the values vector If values <- c(1,2,3) and intervals <- c(5,6), then the interval between 1 and 2 will be 5 seconds, and the interval between 2 and 3 will be 6 seconds. The point is set as the current time.
+
+###*values*
+
+*values* should be a vector of (y-axis) values for the time series. 
+
+###*intervals*
+*intervals* is a vector of time intervals (in seconds). When creating a time series to act as a pattern template, the sum of the intervals should be equal to the expected length of the pattern. For example, if the pattern is expected to occur in 15 seconds on average, `c(3,3,3,3,3)` would be an appropriate intervals vector.
+
+
+The length of the intervals vector must be 1 less than that of the values vector If `values <- c(1,2,3)` and `intervals <- c(5,6)`, then the interval between 1 and 2 will be 5 seconds, and the interval between 2 and 3 will be 6 seconds. The point is set as the current time.
 
 ##GetWindowVariancePDF
-TODO:Fill this in
+
+GetWindowVariancePDF calculates the probability density function of variances in a given time series for each offset of a given window length. **The window length in GetWindowVariancePDF is in number of points, NOT seconds.**
+The number of points should be set to slightly larger than the number of points in the pattern. A good rule of thumb would be to use around 1.1 - 1.2 times the number of points for GetWindowVariancePDF as there are in the pattern, depending on how many extra points are expected to be picked up by the sliding window in the Query function. GetWindowVariancePDF returns a list containing (1) a numeric which represents the variance with the highest probability,  (2) the density function (approxfun of the density object), and (3) the density object as calculated using R's built in density() function.
+
+```{r, fig.show='hold', eval=FALSE}
+GetWindowVariancePDF <- function(timeseries, window.length)
+```
+
+###timeseries
+The time series which will be scanned using a sliding window to find the variance of points within the window at each offset.
+
+###window.length
+The window length of the sliding window.
+
+##GetPIPs
+Perceptually important points (PIPs) are points that have been identified as perceptually important for the formation of patterns within a time series. GetPIPs is used by the Query function to identify PIPs within the sliding window at each offset. The function has been made available for users to call in order to test their curstom pattern templates. 
+
+GetPIPs uses the perpendicular distance method of PIP identification. It begins by assigning the endpoints of the *timeseries* as the first two PIPs. It then finds the point between those two PIPs with the greatest perpendicular distance to the line connecting said PIPs. It repeats this process until the desired number of PIPs have been identified.
+
+See [@Fu:2007:STS:1230165.1230538] for more information on PIPs.
+
+```{r, fig.show='hold', eval=FALSE}
+GetPIPs <- function(timeseries, num.pips) 
+```
+
+##*timeseries*
+The time series within which PIPs will be identified. Remember that the first two PIPs will always be the first and last point of this time series.
+
+###num.pips
+The number of PIPs to identify.
+
+##MatchPattern
+This is the function used by Query to check whether two time series (i.e. a window and pattern template) match based on the template matching method. This is done by calculating the Spearman's rho between the two time series, and returning true if it is above a threshold. The threshold is set to 0.7 by default
+
+The MatchPattern function is made available for users to use in testing their pattern templates.
+
+```{r, fig.show='hold', eval=FALSE}
+MatchPattern <- function(timeseries, pattern.template, threshold=0.7)
+```
+###*timeseries*
+The timeseries that will be check against the pattern to see if they match.
+
+###*pattern.template
+The pattern template that will be checked against. *timeseries* for a match
+
+###*threshold*
+The Spearman's rho threshold, above which *timeseries* and *pattern.template* will be counted as matching (the function will return TRUE). This is set to 0.7 by default, and should be between 0 and 1. Increasing this value will cause the function to be more strict in what it considers to be a match. Decreasing it will cause the function to be more permissive.
 
 #Best Practices and Examples
 
-##Testing *distinctive.feature* and *ruleset* Functions
-<span style="color:red"> TODO: Demonstrate creating several time series that should and should not satisfy a function and testing on that. Discuss RUnit as a more formal a rigid way to test functions, especially if they have multiple and/or complex functions and would like automated scripts to verify they still work every time they change something.<span>
+##Testing *pattern.template*s, *distinctive.feature*s and *ruleset*s
+TODO: Demonstrate creating several time series that should and should not satisfy a function and testing on that. Discuss RUnit as a more formal a rigid way to test functions, especially if they have multiple and/or complex functions and would like automated scripts to verify they still work every time they change something.
 
 Conditions to test for:
 
@@ -183,16 +249,18 @@ Conditions to test for:
 
 ##Simple Distinctive Features
 
-Below are several examples of simple functions that may be passed to the distinctive.feature parameter in order to reduce the run time of the algorithm. The first example will include a full walk through of how one may analyze a time series to determine the utility of a particular distinctive feature.
+Below are several examples of simple functions that may be passed to the *distinctive.feature* parameter in order to reduce the run time of the algorithm. The first function will include a worked example.
 
 ###A Worked Example: Exclusion Based on Variance
 
-If the variance of the pattern significantly differs from that of the surrounding time series, then excluding low (or high) variance segments can be a very effective distinctive feature.
+If the variance of the pattern significantly differs from that of the surrounding time series, then excluding low (and/or high) variance segments can be a very effective distinctive feature.
 
-The function *GetWindowVariancePDF* has been included in the TSPatternQuery package in order to determine whether exclusion based on variance is a appropriate for a given time series and window size. 
+The function GetWindowVariancePDF has been included in the TSPatternQuery package in order to help determine whether exclusion based on variance is a appropriate for a given time series and window size. 
 
+This worked example will demonstrate querying the ts.low.var time series with the pattern.headandshoulders pattern. The GetWindowVariancePDF function will be used to find an appropriate variance to exclude. Most of the source code used in this example has been made visible for demonstration purposes. The comments above each chunk of code should be sufficient to follow along without needing to read every line of code.
 
-```{r, fig.show='hold', eval=TRUE, out.width='47%'}
+The first step will be to define a pattern, import some data for the time series, and the these two things.
+```{r, fig.show='hold', eval=TRUE, out.width='50%'}
 
 #define pattern
 pattern.headandshoulders <- CreateCustomTimeSeries(
@@ -204,30 +272,15 @@ pattern.headandshoulders <- CreateCustomTimeSeries(
 ts.low.var.csv <- read.csv("var-exclusion-ts.csv")
 ts.low.var <- xts(ts.low.var.csv[[2]], order.by = as.POSIXct(ts.low.var.csv[[1]]))
 
+#Plot time series and pattern
 plot(ts.low.var)
 plot(pattern.headandshoulders)
 ```
 
-
-
-
-
-TODO: Move this to GetWindowVariancePDF section
-
-
-
-
-
-
-
-*GetWindowVariancePDF* returns the probability density function of variances in a given time series for each offset of a given window length. The window length in *GetWindowVariancePDF* is in number of points, NOT seconds.
-It should be set to slightly larger than the number of points in the pattern, which is 7 in this case. The function returns a list containing a numeric representing the variance with the highest probability, as well as the curve. The curve is automatically plotted when the function is run. 
-
-Comparing the variance of the pattern to the PDF of the time series (see below) reveals that a significant number of windows can be excluded based on variance, without also excluding the pattern.
-```{r, fig.show='hold', fig.align='center', eval=TRUE, out.width='47%'}
-#Plot the Time Series Variance PDF
+Comparing the variance of the pattern to the probability density function (PDF) of the time series (see below) reveals that a significant number of windows have a lower variance than the pattern. Therefore, variance exclusion is an appropriate distinctive feature for this particular query.
+```{r, fig.show='hold', fig.align='center', eval=TRUE, out.width='50%'}
+#Plot the Time Series Variance Probability Density Function (PDF)
 ts.low.var.pdf <- GetWindowVariancePDF(ts.low.var, window.length=8)
-
 curve(ts.low.var.pdf$density.fun(x), 
       from= min(ts.low.var.pdf$density.points$x), 
       to=max(ts.low.var.pdf$density.points$x), 
@@ -240,7 +293,6 @@ pattern.var <- var(pattern.headandshoulders)
 abline(v=pattern.var, col="red")
 ```
 
-
 Since one or more additional points may be picked up in the same window as the pattern, it is a good idea to ensure that the variance exclusion threshold is not too close to the pattern variance. Since the pattern variance here is 4.9, a threshold of 3.5 will be used. This should still be an effective threshold based on the time series' PDF function (above).
 ```{r, fig.show='hold', eval=TRUE}
 #The query function finds two matches in the time series
@@ -252,7 +304,7 @@ initial.results <- Query(
 )
 ```
 
-```{r, fig.show='hold', out.width='47%'}
+```{r, fig.show='hold', out.width='50%'}
 plot(initial.results[[1]], main = "1st Matched Window")
 plot(initial.results[[2]], main = "2nd Matched Window")
 
@@ -260,7 +312,7 @@ plot(initial.results[[2]], main = "2nd Matched Window")
 
 Note that the first matched window has a much lower variance than the second. 
 
-```{r, echo=FALSE, fig.show='hold', out.width='47%'}
+```{r, echo=FALSE, fig.show='hold', out.width='50%'}
 paste("Variance of first matched window", var(initial.results[[1]]))
 paste("Variance of second matched window", var(initial.results[[2]]))
 
@@ -269,7 +321,7 @@ paste("Variance of second matched window", var(initial.results[[2]]))
 Timing the Query function with and without an "Exclude Low Variance" distinctive feature reveals that the algorithm runs
 significantly faster with the disticntive feature.
 
-```{r, echo=TRUE, fig.align='right', fig.show='hold', out.width='47%'}
+```{r, echo=TRUE, fig.align='right', fig.show='hold', out.width='50%'}
 t.without.df <- system.time(
   results.without <- Query(
       ts.low.var,
@@ -295,7 +347,7 @@ t.with.df <- system.time(
 )
 ```
 
-```{r, echo=FALSE, fig.align='right', fig.show='hold', out.width='47%'}
+```{r, echo=FALSE, fig.align='right', fig.show='hold', out.width='50%'}
 print("Time Without Excluding Low Variance")
 print( t.without.df )
 

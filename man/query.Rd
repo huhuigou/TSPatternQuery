@@ -5,7 +5,7 @@
 \title{Query A Time Series Using a Sliding Window Approach}
 \usage{
 Query(timeseries, pattern.template, distinctive.feature, ruleset,
-  window.length = 1.2 * GetTimeLength(pattern.template),
+  window.length = 1.2 * GetLengthInSeconds(pattern.template),
   spearmans.rho.threshold = 0.7, return.matched.patterns = FALSE)
 }
 \arguments{

@@ -4,7 +4,7 @@ library(RUnit)
 library(TSTestDataUtil)
 
 test.GetPIPs <- function() {
-  ts <- createCustomTimeSeries(
+  ts <- CreateCustomTimeSeries(
     c(1,-5,0,4,0,1,-6,1,0,0),
     c(20,20,20,20,20,20,20,20,20)
     )
@@ -48,7 +48,7 @@ test.GetPIPs <- function() {
 }
 
 test.GetPerpDist <- function() {
-  three.points <- createCustomTimeSeries(c(0,2,0), c(2,2))
+  three.points <- CreateCustomTimeSeries(c(0,2,0), c(2,2))
   actual.perp.dist <- 2
 
   test.perp.dist <-GetPerpDist(three.points[2], three.points[1], three.points[3])

@@ -5,15 +5,15 @@ library(TSTestDataUtil)
 
 test.MatchPattern <- function(){
 
-  template.hns <- createCustomTimeSeries(
+  template.hns <- CreateCustomTimeSeries(
     c(1,10,5,15,5,10,1),
     c(5,5,5,5,5,5)
     )
-  skewed.hns <- createCustomTimeSeries(
+  skewed.hns <- CreateCustomTimeSeries(
     c(1,4,3,5.1,3,4,2),
     c(5,5,5,5,5,5)
     )
-  ones <- createCustomTimeSeries(
+  ones <- CreateCustomTimeSeries(
     c(1,1,1,1,1,1,1),
     c(5,5,5,5,5,5)
   )

@@ -5,19 +5,19 @@ library(TSTestDataUtil)
 
 test.Query <- function(){
 
-  timeseries.long.intervals <- createCustomTimeSeries(
+  timeseries.long.intervals <- CreateCustomTimeSeries(
     c(1,2,3,4,5,6,7),
     c(60*60, 60*60, 60*60, 60*60, 60*60, 60*60)
   )
-  timeseries.short.intervals <- createCustomTimeSeries(
+  timeseries.short.intervals <- CreateCustomTimeSeries(
     c(1,2,3,4,5,6,7),
     c(10, 10, 10, 10, 10, 10)
   )
-  timeseries.var.zero <- createCustomTimeSeries(
+  timeseries.var.zero <- CreateCustomTimeSeries(
     c(2,2,2,2,2,2,2),
     c(10, 10, 10, 10, 10, 10)
   )
-  pattern <- createCustomTimeSeries(
+  pattern <- CreateCustomTimeSeries(
     c(1, 8, 5, 11, 5, 8, 1),
     c(10, 10, 10, 10, 10, 10)
   )
@@ -37,7 +37,7 @@ test.Query <- function(){
 
   #Output that should be returned: data.frame with number of patterns and erros when
   #return.matched.patterns == FALSE, list of matched windows when return.matched.patterns == TRUE
-  timeseries.with.two.patterns <- createCustomTimeSeries(
+  timeseries.with.two.patterns <- CreateCustomTimeSeries(
     c(0.9, 1.1, -0.99, 1.11, 2.1, 5.7, 4.3, 6.2, 4.1, 5.5, -2,
       -.022, 0.1, 2, 2, 10.3, 5, 13.7, 6.2, 9.99, -2, 1, 3, 3.1),
     c(7, 9, 9, 5, 8, 2, 10, 4, 7, 5, 7, 6, 7, 6, 4, 4, 5, 6, 10, 1, 8, 7, 3)
