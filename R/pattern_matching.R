@@ -27,14 +27,9 @@ MatchPattern <- function(timeseries, pattern.template, threshold=0.7){
   if(var(timeseries)==0){
     return(FALSE)
   }
-
-
-
   ts <- as.vector(timeseries)
   pt <- as.vector(pattern.template)
-  #This creates a bug, find a better way to deal with all ties
-  # if(var(ts,pt) == 0)
-  #   return(False)
+
   tryCatch.W.E(rho<-cor.test(ts, pt, method="spearman")[[4]])
   return( as.logical(rho > threshold) )
 }

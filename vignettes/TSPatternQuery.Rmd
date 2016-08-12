@@ -238,14 +238,19 @@ The Spearman's rho threshold, above which *timeseries* and *pattern.template* wi
 #Best Practices and Examples
 
 ##Testing *pattern.template*s, *distinctive.feature*s and *ruleset*s
-TODO: Demonstrate creating several time series that should and should not satisfy a function and testing on that. Discuss RUnit as a more formal a rigid way to test functions, especially if they have multiple and/or complex functions and would like automated scripts to verify they still work every time they change something.
 
-Conditions to test for:
+While TSPatternQuery is meant for quick exploration of patterns within time series data, pattern templates, distinctive features, and rulesets should still be tested to verify that they behave as expected. The amount of effort expended on testing may differ depending on the desired verifiability of the results.
+
+The simplest way in which to test these things is by using the R console to check that they return the correct results under each possible condition that they may encounter. Several conditions that all ruleset and distinctive feature functions should be tested for include:
 
 1. Does it return TRUE when its supposed to
 2. Does it return FALSE when its supposed to
 3. Are there any situations in which it might return NA? This will be counted as FALSE by the algorithm. Is this desireable?
 4. Are there any situations in which it might throw an Error? This will be counted as FALSE by the algorithm. Is this desireable?
+
+More rigorous testing may be performed using RUnit or testthat packages. These facilitate the creation of automated scripts containing the same sort of tests that one might type into the console, as described above. The advantage of this sort of testing is that it is automated, and may thus be run each time something is added or changed. This reduces the liklihood of things breaking unexpectedly. 
+
+Note that the CreateCustomTimeSeries function may be used, not only to create pattern templates, but also to create time series for testing purposes.
 
 ##Simple Distinctive Features
 
@@ -284,17 +289,19 @@ ts.low.var.pdf <- GetWindowVariancePDF(ts.low.var, window.length=8)
 curve(ts.low.var.pdf$density.fun(x), 
       from= min(ts.low.var.pdf$density.points$x), 
       to=max(ts.low.var.pdf$density.points$x), 
-      main="TS Var PDF & Pattern Var",
+      main="Time Series Variance \nProbability Density Function",
       ylab="Probability",
-      xlab="Window Variance")
+      xlab="Window Variance",
+      sub="The red vertical line is the pattern variance.")
 
 #Calculate the Pattern Variance and Add to the PDF Plot as a Vertical Red Line
 pattern.var <- var(pattern.headandshoulders)
 abline(v=pattern.var, col="red")
 ```
 
-Since one or more additional points may be picked up in the same window as the pattern, it is a good idea to ensure that the variance exclusion threshold is not too close to the pattern variance. Since the pattern variance here is 4.9, a threshold of 3.5 will be used. This should still be an effective threshold based on the time series' PDF function (above).
-```{r, fig.show='hold', eval=TRUE}
+Since one or more additional points may be picked up in the same window as the pattern, it is a good idea to ensure that the variance exclusion threshold is not too close to the pattern variance. The pattern variance here is about 4.9, so a threshold of 3.5 will be used. This should still be an effective threshold based on the time series' PDF function (above).
+
+```{r, fig.show='hold', eval=TRUE, out.width='50%'}
 #The query function finds two matches in the time series
 initial.results <- Query(
     ts.low.var,
@@ -302,26 +309,22 @@ initial.results <- Query(
     window.length = 40,
     return.matched.patterns = TRUE
 )
-```
 
-```{r, fig.show='hold', out.width='50%'}
-plot(initial.results[[1]], main = "1st Matched Window")
-plot(initial.results[[2]], main = "2nd Matched Window")
-
-```
-
-Note that the first matched window has a much lower variance than the second. 
-
-```{r, echo=FALSE, fig.show='hold', out.width='50%'}
-paste("Variance of first matched window", var(initial.results[[1]]))
-paste("Variance of second matched window", var(initial.results[[2]]))
+#Plot the two matches
+plot(initial.results[[1]], main = "1st Matched Window", 
+     sub=paste("Variance =", var(initial.results[[1]])))
+plot(initial.results[[2]], main = "2nd Matched Window", 
+     sub=paste("Variance =", var(initial.results[[2]])))
 
 ```
 
-Timing the Query function with and without an "Exclude Low Variance" distinctive feature reveals that the algorithm runs
-significantly faster with the disticntive feature.
+Note that the variance of the first matched window (`r var(initial.results[[1]])`) is much lower than that of the second matched window (variance = `r var(initial.results[[2]])`).
 
-```{r, echo=TRUE, fig.align='right', fig.show='hold', out.width='50%'}
+Recording the running time of the Query function with and without an "Exclude Low Variance" distinctive feature reveals that the algorithm runs significantly faster with said distinctive feature. 
+
+```{r, echo=TRUE, fig.show='hold', out.width='50%'}
+#Time the Query algorithm WITHOUT variance exclusion as a distinctive feature 
+#and store the result in t.without.df
 t.without.df <- system.time(
   results.without <- Query(
       ts.low.var,
@@ -331,6 +334,8 @@ t.without.df <- system.time(
   )
 )
 
+#Time the Query algorithm WITH variance exclusion as a distinctive feature 
+#and store the result in t.with.df
 exclude.low.var <- function(window){
   var.threshold <- 3.5
   return(var(window)>var.threshold)
@@ -345,54 +350,46 @@ t.with.df <- system.time(
       return.matched.patterns = TRUE
   )
 )
+
+#Print the elapsed times
+cat("Elapsed Time Without Excluding Low Variance:", t.without.df[[3]], 
+    "\nElapsed Time With Excluding Low Variance:", t.with.df[[3]] )
 ```
 
-```{r, echo=FALSE, fig.align='right', fig.show='hold', out.width='50%'}
-print("Time Without Excluding Low Variance")
-print( t.without.df )
+Note that the previously 1st Matched Window from before no longer matches since it does not satisfy the distinctive feature of having a variance greater than 3.5. This may or may not be desireable depending on the circumstances.
 
-print("Time With Excluding Low Variance")
-print( t.with.df )
+```{r, echo=TRUE, fig.align='center', fig.show='hold', out.width='50%'}
+length(results.with)
+plot(results.with[[1]], main="The Only Window Returned When Variance \nExclusion was Used", 
+     sub=paste("Variance =", var(results.with[[1]]) ) )
 ```
 
-Note that the previously 1st Matched Window from before no longer matches since it does not satisfy the distinctive feature
-of having a variance greater than 3.5. This could be 
-
-####Increasing (On Average)
+###Increasing or Decreasing (On Average)
 ```{r, fig.show='hold', eval=FALSE}
 
 increasing <- function(window){
   return( mean(diff(as.vector(window))) > 0 )
 }
-```
-
-####Increasing (Every point is greater than its predecessor)
-```{r, fig.show='hold', eval=FALSE}
-
-increasing.monotonically <- function(window){
-  return(all(window == cummax(window)))
-}
-```
-TODO: provide link to stack overflow
-
-####Decreasing (On Average)
-```{r, fig.show='hold', eval=FALSE}
 
 decreasing <- function(window){
   return( mean(diff(as.vector(window))) < 0 )
 }
 ```
 
-####Decreasing (Every point is less than its predecessor)
+###Increasing or Decreasing (Every point is greater/less than its predecessor)
 ```{r, fig.show='hold', eval=FALSE}
+
+increasing.monotonically <- function(window){
+  return(all(window == cummax(window)))
+}
 
 decreasing.monotonically <- function(window){
   return(all(window == cummin(window)))
 }
 ```
-TODO: provide link to stack overflow
+See *[StackOverflow - How to check if a sequence of numbers is monotonically increasing (or decreasing)?](http://stackoverflow.com/questions/13093912/how-to-check-if-a-sequence-of-numbers-is-monotonically-increasing-or-decreasing)* for more about detecting monotonically increasing or decreasing vectors using cummax and cummin.
 
-####In Range
+###In Range
 ```{r, fig.show='hold', eval=FALSE}
 within.range <- function(window){
   ceiling <- 5
@@ -401,12 +398,63 @@ within.range <- function(window){
 }
 ```
 
-##Rulesets
+##A Note on Rulesets
+The *ruleset* parameter is meant for more complex functions than *distinctive.feature*. A good rule of thumb is if a function uses loops (especially embedded loops), or is otherwise knwon to be slow, then it should be included in *ruleset* rather than *distinctive.feature*. Functions that rely on PIPs must also go in *rulset* since PIPs are not made available to *distinctive.feature* functions.
 
+##Combining Rules for Aggregated Rulesets and Distinctive Features
 
+Multiple functions may be passed to *ruleset* or *distinctive.feature* by wrapping them inside of a single function. The example shown here will use *ruleset* but can be applied to *distinctive.feature* so long as the component functions only use the window argument (since *distinctive.feature* does not deal with PIPs). 
 
-##Finding Optimal window.length
+First begin by defining the functions that will make up each of the rules.
+```{r, fig.show='hold', eval=FALSE}
+contains.three.peaks.above.10 <- function(pips){
+  stopifnot(length(pips) != 7)
+  
+  #Assign peaks based on 7 points head and shoulders template
+  possible.peak1 <- pips[[2]]
+  possible.peak2 <- pips[[4]]
+  possible.peak3 <- pips[[6]]
+  
+  #Check that peaks are actually peaks (i.e. that they are higher than adjacent points)
+  if(possible.peak1 < pips[[1]] | possible.peak2 < pips[[3]]) return(FALSE)
+  if(possible.peak2 < pips[[3]] | possible.peak2 <pips[[5]]) return(FALSE)
+  if(possible.peak3 < pips[[5]] | possible.peak3 < pips[[7]]]) return(FALSE)
+  
+  #Return true if peaks are higher than 10
+  return(possible.peak1>10 && possible.peak2 > 10 && possible.peak3 >10)
+}
 
-##Finding Optimal spearmans.rho.threshold
+middle.peak.is.higher <- function(pips){
+  peak1 <- pips[[2]]
+  peak2 <- pips[[4]]
+  peak3 <- pips[[6]]
+  
+  return(peak2 > peak1 && peak2 > peak3)
+}
+
+variance.greater.than.2 <- function(window){
+  return(var(window)>2)
+}
+```
+
+Then call them all from within a single "aggregate ruleset" function. The aggreate function is passed to Query as normal.
+```{r, fig.show='hold', eval=FALSE}
+aggregate.ruleset <- function(window, pips){
+  
+  firstRule <- contains.three.peaks.above.10(pips)
+  secondRule <- middle.peak.is.higher(pips)
+  thirdRule <- variance.greater.than.2(window)
+  
+  return(firstRule && secondRule && thirdRule)
+}
+
+Query(
+    ts.low.var,
+    pattern.headandshoulders,
+    window.length = 40,
+    ruleset = aggregate.ruleset,
+    return.matched.patterns = TRUE
+)
+```
 
 #References
