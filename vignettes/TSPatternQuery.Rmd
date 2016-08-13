@@ -19,7 +19,6 @@ bibliography: ../bibliography.bib
 
 ```{r, fig.show='hide', include=FALSE}
 library(TSPatternQuery)
-library(TSTestDataUtil)
 library(xts)
 library(zoo)
 ```
