@@ -3,13 +3,11 @@ title: "A Time Series Pattern Query Tool Using PIPs and Hybrid Template-Ruleset 
 author: "Joshua Anthony Marsh"
 date: "`r Sys.Date()`"
 output: 
-  rmarkdown::pdf_document:
+  rmarkdown::html_document:
+    theme: readable
     toc: true
-    toc_depth: 3
-    pandoc_args: [
-      "--number-sections"
-    ]
-
+    toc_float: true
+    toc_depth: 2
 vignette: >
   %\VignetteIndexEntry{A Time Series Pattern Query Tool Using PIPs and Hybrid Template-Ruleset Matching}
   %\VignetteEngine{knitr::rmarkdown}
@@ -115,7 +113,7 @@ Errors originating from the user-defined *distinctive.feature* function will sim
 1. To encourage the use of short, low-complexity functions.
 2. There is no gaurantee that enough data points have been found within the window to be able to index specific points (e.g. window[[4]] would be out of bounds for a window containing only 3 points) and it is assumed that many R users are not familiar with error handling. Instructing users that errors in their function will be counted as Match = FALSE has been chosen as a more user friendly alternative to requiring that users learn R's TryCatch syntax.
 
-Users are strongly recommended to test their *distinctive.feature* functions before using them with a large data set. See the Best Practices and Examples section below for more info on how to test these functions. 
+Users are strongly recommended to test their *distinctive.feature* functions before using them with a large data set. See the Best Practices section below for more info on how to test these functions. 
 
 This is similar to ruleset matching as discussed in [@Fu:2007:STS:1230165.1230538] and [@Zhang:2010:RTH:1862242.1862263], however, with an emphasis on improving speed rather than accuracy.
 
@@ -129,7 +127,7 @@ ruleset <- function(window, pips){}
 
 This function is run AFTER PIP identification and template based matching. Unlike the *distinctive.feature* parameter, errors originating from this function WILL cause Query to crash. This is done for because *ruleset* is considered a more advanced feature than *distinctive.feature* since it is meant to contain higher complexity rules. Therefore users are expected to employ proper error handling within their code.
 
-Users are strongly recommended to test their *ruleset* functions before using them with a large data set. See the Best Practices and Examples section below for more info on how to test these functions. 
+Users are strongly recommended to test their *ruleset* functions before using them with a large data set. See the Best Practices section below for more info on how to test these functions. 
 
 See [@Fu:2007:STS:1230165.1230538] and [@Zhang:2010:RTH:1862242.1862263] for ruleset matching.
 
@@ -194,10 +192,10 @@ The number of points should be set to slightly larger than the number of points 
 GetWindowVariancePDF <- function(timeseries, window.length)
 ```
 
-###timeseries
+###*timeseries*
 The time series which will be scanned using a sliding window to find the variance of points within the window at each offset.
 
-###window.length
+###*window.length*
 The window length of the sliding window.
 
 ##GetPIPs
@@ -211,10 +209,10 @@ See [@Fu:2007:STS:1230165.1230538] for more information on PIPs.
 GetPIPs <- function(timeseries, num.pips) 
 ```
 
-##*timeseries*
+###*timeseries*
 The time series within which PIPs will be identified. Remember that the first two PIPs will always be the first and last point of this time series.
 
-###num.pips
+###*num.pips*
 The number of PIPs to identify.
 
 ##MatchPattern
@@ -228,15 +226,15 @@ MatchPattern <- function(timeseries, pattern.template, threshold=0.7)
 ###*timeseries*
 The timeseries that will be check against the pattern to see if they match.
 
-###*pattern.template
-The pattern template that will be checked against. *timeseries* for a match
+###*pattern.template*
+The pattern template that will be checked against. *timeseries* for a match.
 
 ###*threshold*
 The Spearman's rho threshold, above which *timeseries* and *pattern.template* will be counted as matching (the function will return TRUE). This is set to 0.7 by default, and should be between 0 and 1. Increasing this value will cause the function to be more strict in what it considers to be a match. Decreasing it will cause the function to be more permissive.
 
-#Best Practices and Examples
+#Best Practices
 
-##Testing *pattern.template*s, *distinctive.feature*s and *ruleset*s
+##Testing User Defined Parameters
 
 While TSPatternQuery is meant for quick exploration of patterns within time series data, pattern templates, distinctive features, and rulesets should still be tested to verify that they behave as expected. The amount of effort expended on testing may differ depending on the desired verifiability of the results.
 
@@ -253,11 +251,11 @@ Note that the CreateCustomTimeSeries function may be used, not only to create pa
 
 ##Simple Distinctive Features
 
-Below are several examples of simple functions that may be passed to the *distinctive.feature* parameter in order to reduce the run time of the algorithm. The first function will include a worked example.
+Below are several functions that may be passed to the *distinctive.feature* parameter. Remember that the aim of *distinctive.feature* is to reduce running time by finding false matches early in the algorithms exectution (i.e. before PIP identification). The first function will include a worked example.
 
-###A Worked Example: Exclusion Based on Variance
+###Exclusion Based on Variance - A Worked Example
 
-If the variance of the pattern significantly differs from that of the surrounding time series, then excluding low (and/or high) variance segments can be a very effective distinctive feature.
+If the variance of the pattern significantly differs from that of the surrounding time series, then excluding low (and/or high) variance segments can be an effective distinctive feature.
 
 The function GetWindowVariancePDF has been included in the TSPatternQuery package in order to help determine whether exclusion based on variance is a appropriate for a given time series and window size. 
 
