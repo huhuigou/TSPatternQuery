@@ -271,13 +271,11 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">My Website</a>
+      <a class="navbar-brand" href="index.html">A Time Series Pattern Query Tool Using PIPs and Hybrid Template-Ruleset Matching</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li>
-  <a href="index.html">Home</a>
-</li>
+        
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -565,8 +563,8 @@ t.with.df &lt;- system.time(
 #Print the elapsed times
 cat(&quot;Elapsed Time Without Excluding Low Variance:&quot;, t.without.df[[3]], 
     &quot;\nElapsed Time With Excluding Low Variance:&quot;, t.with.df[[3]] )</code></pre>
-<pre><code>## Elapsed Time Without Excluding Low Variance: 0.376 
-## Elapsed Time With Excluding Low Variance: 0.151</code></pre>
+<pre><code>## Elapsed Time Without Excluding Low Variance: 0.366 
+## Elapsed Time With Excluding Low Variance: 0.154</code></pre>
 <p>Note that the previously 1st Matched Window from before no longer matches since it does not satisfy the distinctive feature of having a variance greater than 3.5. This may or may not be desireable depending on the circumstances.</p>
 <pre class="r"><code>length(results.with)</code></pre>
 <pre><code>## [1] 1</code></pre>
