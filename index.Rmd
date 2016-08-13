@@ -58,7 +58,7 @@ See [@Zhang:2010:RTH:1862242.1862263] for a more detailed description of the hyb
 
 #Functions
 ##Query
-The TSPatternQuery may be accessed through the following function:
+The Query function is the main interface to TSPatternQuery.
 
 ```{r, fig.show='hold', eval=FALSE}
 Query <- function(timeseries,
