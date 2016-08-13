@@ -298,7 +298,7 @@ div.tocify {
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <p>The Time Series Pattern Query Tool (henceforth referred to as the “TSPatternQuery” for short) is meant for quick exploration of time series patterns, and is designed to be usable by individuals of varying skill. This package can be viewed as an implementation of the “real time hybrid pattern matching scheme” presented in <span class="citation">(Z. Zhang et al. 2010)</span>. In short, this is a sliding window algorithm. Important points are identified within the window at each offset. They are then compared to a template of the desired pattern using spearman’s rho as a similarity measure. Additional rules provided to the function may be used to increase accuracy, or to short circuit the algorithm in order to increase speed.</p>
-<p>The rest of this document will be laid out as follows. The first section will go into further detail explaining the underlying algorithm. The second section will present present the different functions made available through the TSPatternQuery. This section will also briefly mention the CreateCustomTimeSeries function that has been provided to help the user in creating pattern templates. The last section will discuss best practices and provide examples.</p>
+<p>The rest of this document will be laid out as follows. The first section will go into further detail explaining the underlying algorithm. The second section will present the different functions made available through the TSPatternQuery. This section will also briefly mention the CreateCustomTimeSeries function that has been provided to help the user in creating pattern templates. The last section will discuss best practices and provide examples.</p>
 </div>
 <div id="algorithm" class="section level1">
 <h1>Algorithm</h1>
@@ -563,8 +563,8 @@ t.with.df &lt;- system.time(
 #Print the elapsed times
 cat(&quot;Elapsed Time Without Excluding Low Variance:&quot;, t.without.df[[3]], 
     &quot;\nElapsed Time With Excluding Low Variance:&quot;, t.with.df[[3]] )</code></pre>
-<pre><code>## Elapsed Time Without Excluding Low Variance: 0.412 
-## Elapsed Time With Excluding Low Variance: 0.158</code></pre>
+<pre><code>## Elapsed Time Without Excluding Low Variance: 0.359 
+## Elapsed Time With Excluding Low Variance: 0.145</code></pre>
 <p>Note that the previously 1st Matched Window from before no longer matches since it does not satisfy the distinctive feature of having a variance greater than 3.5. This may or may not be desireable depending on the circumstances.</p>
 <pre class="r"><code>length(results.with)</code></pre>
 <pre><code>## [1] 1</code></pre>
