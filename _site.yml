@@ -1,7 +1,4 @@
-name: "my-website"
+name: "TSPatternQuery Vignette"
 output_dir: "."
 navbar:
-  title: "My Website"
-  left:
-    - text: "Home"
-      href: index.html
+  title: "A Time Series Pattern Query Tool Using PIPs and Hybrid Template-Ruleset Matching"
