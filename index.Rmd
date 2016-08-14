@@ -2,11 +2,6 @@
 title: "A Time Series Pattern Query Tool Using PIPs and Hybrid Template-Ruleset Matching"
 author: "Joshua Anthony Marsh"
 date: "`r Sys.Date()`"
-output: 
-  rmarkdown::html_document:
-    toc: true
-    toc_float: true
-    toc_depth: 2
 
 bibliography: bibliography.bib
 ---

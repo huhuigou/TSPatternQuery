@@ -20,14 +20,14 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 
 <style type="text/css">code{white-space: pre;}</style>
 <link rel="stylesheet"
-      href="site_libs/highlight/default.css"
+      href="site_libs/highlight/textmate.css"
       type="text/css" />
 <script src="site_libs/highlight/highlight.js"></script>
 <style type="text/css">
@@ -102,34 +102,34 @@ button.code-folding-btn:focus {
 <style type="text/css">
 /* padding for bootstrap navbar */
 body {
-  padding-top: 51px;
+  padding-top: 66px;
   padding-bottom: 40px;
 }
 /* offset scroll position for anchor links (for fixed navbar)  */
 .section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 71px;
+  margin-top: -71px;
 }
 
 .section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 71px;
+  margin-top: -71px;
 }
 .section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 71px;
+  margin-top: -71px;
 }
 .section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 71px;
+  margin-top: -71px;
 }
 .section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 71px;
+  margin-top: -71px;
 }
 .section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 71px;
+  margin-top: -71px;
 }
 </style>
 
@@ -567,8 +567,8 @@ t.with.df &lt;- system.time(
 #Print the elapsed times
 cat(&quot;Elapsed Time Without Excluding Low Variance:&quot;, t.without.df[[3]], 
     &quot;\nElapsed Time With Excluding Low Variance:&quot;, t.with.df[[3]] )</code></pre>
-<pre><code>## Elapsed Time Without Excluding Low Variance: 0.745 
-## Elapsed Time With Excluding Low Variance: 0.158</code></pre>
+<pre><code>## Elapsed Time Without Excluding Low Variance: 0.381 
+## Elapsed Time With Excluding Low Variance: 0.185</code></pre>
 <p>Note that the previously 1st Matched Window from before no longer matches since it does not satisfy the distinctive feature of having a variance greater than 3.5. This may or may not be desireable depending on the circumstances.</p>
 <pre class="r"><code>length(results.with)</code></pre>
 <pre><code>## [1] 1</code></pre>
