@@ -1,9 +1,16 @@
-name: "TSPatternQuery Vignette"
+name: "TSPatternQuery"
 output_dir: "."
 navbar:
-  title: "TSPatternQuery Vignette"
+  title: "TSPatternQuery"
   left:
     - text: "Home"
       href: index.html
     - text: "Participate in Evaluation"
       href: evaluation.html
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    theme: readable
+    highlight: textmate

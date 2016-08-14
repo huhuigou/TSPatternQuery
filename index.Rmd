@@ -4,7 +4,6 @@ author: "Joshua Anthony Marsh"
 date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_document:
-    theme: readable
     toc: true
     toc_float: true
     toc_depth: 2

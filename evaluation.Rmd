@@ -1,5 +1,37 @@
 ---
-  title: "Evaluation"
+title: "Evaluation"
 ---
 
-  "We do what we must, because we can." -Glados
+#Preamble
+
+Insert filled in text from intro-script-template here.
+
+
+#Part 1: Setup
+
+Download RStudio if possible. Open a new session.  At the end of this evaluation, you will be asked to create and send me an .Rhistory file containing a history of everything you've typed during this session. Instructions for this will be given at the end of this document.
+
+#Part 2: Making a Template
+
+Provide data set and instruct them to make a templat which (I know) is an appropriate length to match some patterns in the data.
+
+#Part 3: Window Length and Matching Threshold
+
+Provide a different data set that will not match the pattern unless they adjust the window length. Give them a hint as to what caused the pattern, and what length it should be or something like that.
+
+Have them adjust the spearmans rho threshold until they are satisfied that the patterns returned are good patterns
+
+#Part 4: Distinctive Feature
+
+Provide a dataset (and pattern template) where the pattern has much higher values than the dataset, ask users to try and think of a distinctive feature that will decrease the run time of this query.
+
+
+
+
+#Part X: Questionnaire 
+
+Google form. Your participant ID is: `r sample(1:10000, 1)`. Please type the command savehistory("<participantID>.Rhistory") and email me the file. Do not worry if you refreshed the page and your ID changed, this won't effect anything.
+
+#Part X+1: Debriefing
+
+Insert filled in text from debrief-script-template here
