@@ -296,10 +296,7 @@ div.tocify {
 </div>
 
 
-<div id="preamble" class="section level1">
-<h1>Preamble</h1>
 <p>Insert filled in text from intro-script-template here.</p>
-</div>
 <div id="part-1-setup" class="section level1">
 <h1>Part 1: Setup</h1>
 <p>Download RStudio if possible. Open a new session. At the end of this evaluation, you will be asked to create and send me an .Rhistory file containing a history of everything you’ve typed during this session. Instructions for this will be given at the end of this document.</p>
@@ -315,14 +312,21 @@ div.tocify {
 </div>
 <div id="part-4-distinctive-feature" class="section level1">
 <h1>Part 4: Distinctive Feature</h1>
-<p>Provide a dataset (and pattern template) where the pattern has much higher values than the dataset, ask users to try and think of a distinctive feature that will decrease the run time of this query.</p>
+<p>Provide a dataset (and pattern template) where the pattern has much higher values than the dataset, ask users to try and think of and implement a distinctive feature that will decrease the run time of this query.</p>
 </div>
-<div id="part-x-questionnaire" class="section level1">
-<h1>Part X: Questionnaire</h1>
-<p>Google form. Your participant ID is: 375. Please type the command savehistory(“<participantID>.Rhistory”) and email me the file. Do not worry if you refreshed the page and your ID changed, this won’t effect anything.</p>
+<div id="part-5-ruleset" class="section level1">
+<h1>Part 5: Ruleset</h1>
+<p>Provide a dataset with lots of patterns, and ask users to use the rulset parameter to make it return only the ones that have some particular quality about them.</p>
 </div>
-<div id="part-x1-debriefing" class="section level1">
-<h1>Part X+1: Debriefing</h1>
+<div id="part-6-questionnaire" class="section level1">
+<h1>Part 6: Questionnaire</h1>
+<p>The command below will save everything you have typed during this session into a file called “evaluation.Rhistory”. It will then print the contents of that file to your console. Please copy and paste this command into the R console and run it. Then copy and paste the output into the Google form before. Once you have done this, please answer the rest of the questions on the form.</p>
+<pre class="r"><code>savehistory(&quot;evaluation.Rhistory&quot;)  
+scan(&#39;evaluation.Rhistory&#39;,&#39;character&#39;, sep = &quot;\n&quot;). </code></pre>
+<p>Google form goes here</p>
+</div>
+<div id="part-7-debriefing" class="section level1">
+<h1>Part 7: Debriefing</h1>
 <p>Insert filled in text from debrief-script-template here</p>
 </div>
 
