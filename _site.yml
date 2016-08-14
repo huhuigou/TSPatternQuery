@@ -2,3 +2,8 @@ name: "TSPatternQuery Vignette"
 output_dir: "."
 navbar:
   title: "TSPatternQuery Vignette"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Participate in Evaluation"
+      href: evaluation.html
