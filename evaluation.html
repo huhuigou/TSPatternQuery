@@ -11,7 +11,7 @@
 
 
 
-<title>Evaluation</title>
+<title>Tutorial and User Evaluation</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
@@ -277,7 +277,7 @@ div.tocify {
   <a href="index.html">Home</a>
 </li>
 <li>
-  <a href="evaluation.html">Participate in Evaluation</a>
+  <a href="evaluation.html">Tutorial/User Evaluation</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -291,28 +291,41 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Evaluation</h1>
+<h1 class="title toc-ignore">Tutorial and User Evaluation</h1>
 
 </div>
 
 
+<p>This page contains several exercises that may be used as a tutorial for the TSPatternQuery package. Should you wish to help by providing feedback, you may also participate in the user evaluation. Instructions for doing so are included in the next section.</p>
+<div id="evaluation-preamble" class="section level1">
+<h1>Evaluation Preamble</h1>
 <p>The aim of this evaluation is to gain feedback on the TSPatternQuery package. It is important to involve users in the design of software packages so to ensure that software developed not only solves the problem, but is also usable. This evaluation is set up so that you may do it on your own. Simply follow the instructions given in this document and answer the questionnaire at the end. The exercises below will require you to download a package in RStudio and use it on time series data that will be provided. At the end of the exercises, you will be instructed to save and send me the contents of an .Rhistory file containing everything that you typed into the R console during this session. The only other data collected during this evaluation will be your answers to the questionnaire. If you have any questions, feel free to contact me via email at joshanthonymarsh (AT) gmail (DOT) com. The purpose of this evaluation is not to test your ability. Should you find a particular task difficult, please indicate so in the questionnaire (or by emailing me). This is likely an indicator that something is deficient in the software or its documentation, and is useful feedback. You are welcome to withdraw from the experiment at any time. <strong>At this point, please send me an email at joshanthonymarsh (AT) gmail (DOT) com stating that you agree to take part in this evaluation.</strong> An email including your name and the sentence “I agree to take part in the TSPatternQuery evaluation.” will suffice. I also encourage you to include any questions that you may have in this email. If you do include questions in your email, please wait for me to get back to you before you begin the evaluation.</p>
 <p><strong>Please note</strong> that I have intentionally avoided describing the TSPatternQuery tool on this evaluation page. Part of what is being evaluated is the documentation for the package. Please click the “Home” button at the top of this page to view the vignette for this package. You are encouraged to read as much of the vignette as you feel is necessary to understand and work with the TSPatternQuery package.</p>
+</div>
 <div id="part-1-setup" class="section level1">
 <h1>Part 1: Setup</h1>
 <p>It is recommended that you use RStudio for the following exercises. If you do not already have RStudio installed, then you may download it from this link: <a href="https://www.rstudio.com/">Download RStudio</a>. Alternatively, you may launch RStudio in a web browser using <a href="https://www.rollapp.com/app/rstudio">rollApp RStudio</a>. The second option may result in slower package download and execution times.</p>
 <p>Open a new session in RStudio and navigate to an empty directory. You may call this directory “evaluation”. Set this directory as your working directory using the <code>setwd(&quot;&lt;Path to your directory&gt;&quot;)</code> command. The main reason for doing this is because you will be creating a new “evaluation.Rhistory” file within the working directory at the end of this evaluation. This file will contain everything that you have typed during this session, and you will be instructed to upload its contents to a google form. Remember that you may decide not to participate in this evaluation at any time.</p>
 <p>Once you have set the working directory, enter the following commands into the R console.</p>
 <pre class="r"><code>devtools::install_github(&quot;joshmarsh/TSPatternQuery&quot;)
-library(TSPatternQuery)</code></pre>
+library(TSPatternQuery)
+library(xts)</code></pre>
 <p>You may optionally add the <code>build_vignettes=TRUE</code> parameter to <code>devtools::install_github(&quot;joshmarsh/TSPatternQuery&quot;)</code>, however the vignette for TSPatternQuery may be more easily viewed by clicking the Home button at the top of this screen. You do not need to read the vignette in it’s entirety. It is there for you to reference if you get stuck at any point.</p>
 </div>
-<div id="part-2-making-a-template" class="section level1">
-<h1>Part 2: Making a Template</h1>
-<p>Provide data set and instruct them to make a templat which (I know) is an appropriate length to match some patterns in the data.</p>
+<div id="part-2-making-a-template-and-matching-threshold" class="section level1">
+<h1>Part 2: Making a Template and Matching Threshold</h1>
+<p>Run the following command in the R console to import a time series for this exercise.</p>
+<pre class="r"><code>ts &lt;- xts(read.csv(&quot;tutorial_data/part2_ts.csv&quot;)[[2]], 
+              order.by = as.POSIXct(read.csv(&quot;tutorial_data/part2_ts.csv&quot;)[[1]]))</code></pre>
+<p>Using the <code>CreateCustomTimeSeries</code> function, please define a pattern template in order to find the following pattern. Notice that the points of the pattern are spaced in 5 second intervals.</p>
+<p><img src="evaluation_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Once you have defined the pattern, use the <code>Query</code> function to find occurrences of the pattern in the timesiers that you imported. You may at first use the <strong>timeseries</strong> and <strong>pattern.template</strong> only. You will likely notice that the Query functions finds multiple matches. If you do not show any matches, there may be a problem with your pattern template.</p>
+<p>Set the <strong>return.matched.patterns</strong> parameter to TRUE in order to return a list of the windows that have been matched. Plot these so that you can see how successful your query has been.</p>
+<p>Next, try incrasing the <strong>spearmans.rho.threshold</strong> until you are satisfied that your query isn’t too permissive. You may then move on to the next section.</p>
+<p>USe code folding to provide “correct” answer</p>
 </div>
-<div id="part-3-window-length-and-matching-threshold" class="section level1">
-<h1>Part 3: Window Length and Matching Threshold</h1>
+<div id="part-3-window-length" class="section level1">
+<h1>Part 3: Window Length</h1>
 <p>Provide a different data set that will not match the pattern unless they adjust the window length. Give them a hint as to what caused the pattern, and what length it should be or something like that.</p>
 <p>Have them adjust the spearmans rho threshold until they are satisfied that the patterns returned are good patterns</p>
 </div>
@@ -324,8 +337,12 @@ library(TSPatternQuery)</code></pre>
 <h1>Part 5: Ruleset</h1>
 <p>Provide a dataset with lots of patterns, and ask users to use the rulset parameter to make it return only the ones that have some particular quality about them.</p>
 </div>
+<div id="invite-them-to-use-with-their-own-dataset" class="section level1">
+<h1>Invite them to use with their own dataset</h1>
+</div>
 <div id="part-6-questionnaire" class="section level1">
 <h1>Part 6: Questionnaire</h1>
+<p>Add questions to questionnaire about if they used their own dataset</p>
 <p>The command below will save everything you have typed during this session into a file called “evaluation.Rhistory”. It will then print the contents of that file to your console. Please copy and paste this command into the R console and run it. Then copy and paste the output into the Google form before. Once you have done this, please answer the rest of the questions on the form.</p>
 <pre class="r"><code>savehistory(&quot;evaluation.Rhistory&quot;)  
 scan(&#39;evaluation.Rhistory&#39;,&#39;character&#39;, sep = &quot;\n&quot;). </code></pre>
