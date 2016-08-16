@@ -312,33 +312,58 @@ library(TSPatternQuery)
 library(xts)</code></pre>
 <p>You may optionally add the <code>build_vignettes=TRUE</code> parameter to <code>devtools::install_github(&quot;joshmarsh/TSPatternQuery&quot;)</code>, however the vignette for TSPatternQuery may be more easily viewed by clicking the Home button at the top of this screen. You do not need to read the vignette in it’s entirety. It is there for you to reference if you get stuck at any point.</p>
 </div>
-<div id="part-2-making-a-template-and-matching-threshold" class="section level1">
-<h1>Part 2: Making a Template and Matching Threshold</h1>
+<div id="part-2-pattern-template-and-matching-threshold" class="section level1">
+<h1>Part 2: Pattern Template and Matching Threshold</h1>
 <p>Run the following command in the R console to import a time series for this exercise.</p>
-<pre class="r"><code>ts &lt;- xts(read.csv(&quot;tutorial_data/part2_ts.csv&quot;)[[2]], 
+<pre class="r"><code>part2.ts &lt;- xts(read.csv(&quot;tutorial_data/part2_ts.csv&quot;)[[2]], 
               order.by = as.POSIXct(read.csv(&quot;tutorial_data/part2_ts.csv&quot;)[[1]]))</code></pre>
-<p>Using the <code>CreateCustomTimeSeries</code> function, please define a pattern template in order to find the following pattern. Notice that the points of the pattern are spaced in 5 second intervals.</p>
-<p><img src="evaluation_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>Once you have defined the pattern, use the <code>Query</code> function to find occurrences of the pattern in the timesiers that you imported. You may at first use the <strong>timeseries</strong> and <strong>pattern.template</strong> only. You will likely notice that the Query functions finds multiple matches. If you do not show any matches, there may be a problem with your pattern template.</p>
+<p>Using the <code>CreateCustomTimeSeries</code> function, please define a pattern template in order to find the following pattern. You may name it <code>part2.pattern</code>. Notice that the points of the pattern are spaced in 5 second intervals.</p>
+<p><img src="evaluation_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Once you have defined the pattern, use the <code>Query</code> function to find occurrences of the pattern in the timesiers that you imported. You may at first use the <em>timeseries</em> and <strong>pattern.template</strong> only. You will likely notice that the Query functions finds multiple matches. If you do not show any matches, there may be a problem with your pattern template.</p>
 <p>Set the <strong>return.matched.patterns</strong> parameter to TRUE in order to return a list of the windows that have been matched. Plot these so that you can see how successful your query has been.</p>
 <p>Next, try incrasing the <strong>spearmans.rho.threshold</strong> until you are satisfied that your query isn’t too permissive. You may then move on to the next section.</p>
-<p>USe code folding to provide “correct” answer</p>
 </div>
 <div id="part-3-window-length" class="section level1">
 <h1>Part 3: Window Length</h1>
-<p>Provide a different data set that will not match the pattern unless they adjust the window length. Give them a hint as to what caused the pattern, and what length it should be or something like that.</p>
-<p>Have them adjust the spearmans rho threshold until they are satisfied that the patterns returned are good patterns</p>
+<p>Run the following command in the R console to import a time series for this exercise.</p>
+<pre class="r"><code>part3.ts &lt;- xts(read.csv(&quot;tutorial_data/part3_ts.csv&quot;)[[2]], 
+              order.by = as.POSIXct(read.csv(&quot;tutorial_data/part3_ts.csv&quot;)[[1]]))</code></pre>
+<p>Run the following command in the R console to create a pattern template. This pattern is the same shape as the one that you used in part 2, however it is being provided to you this time to ensure that it is correct.</p>
+<pre class="r"><code>part3.pattern &lt;- CreateCustomTimeSeries(
+  values = c(0, -1, 2, -4, 2, -1, 0),
+  intervals = c(5,5,5,5,5,5)
+)</code></pre>
+<p>Go ahead and run the Query function with the pattern template and time series. It should not find any matches. This is because the length of the sliding window is incorrect. It has been set to 30 seconds in the code (The vector <code>c(5,5,5,5,5,5)</code> has a total length of 30) Assume that you have prior knowledge, which allows you to estimate that the length of the pattern should be somewhere between 5 and 9 days.</p>
+<p>Try rerunning the Query function with an adjusted <strong>window.length</strong> based on your prior knowledge. Try different lengths until you find a match. If you you are unable to find a match after several tries, refer to the documentation over <strong>window.length</strong> to ensure that you are passing it correct values.</p>
 </div>
 <div id="part-4-distinctive-feature" class="section level1">
 <h1>Part 4: Distinctive Feature</h1>
-<p>Provide a dataset (and pattern template) where the pattern has much higher values than the dataset, ask users to try and think of and implement a distinctive feature that will decrease the run time of this query.</p>
+<p>Run the following command in the R console to import a time series for this exercise.</p>
+<pre class="r"><code>part4.ts &lt;- xts(read.csv(&quot;tutorial_data/part4_ts.csv&quot;)[[2]], 
+              order.by = as.POSIXct(read.csv(&quot;tutorial_data/part4_ts.csv&quot;)[[1]]))</code></pre>
+<p>Run the following command in the R console to create a pattern template.</p>
+<pre class="r"><code>part4.pattern &lt;- CreateCustomTimeSeries(
+  values = c(0,-4,-3,-8,-3,-4,0),
+  intervals = c(5,5,5,5,5,5)
+)</code></pre>
+<p>An appropriate <strong>window.length</strong> for this pattern is 5 days. Assume that you have prior knowledge that the normal range of values for this time series is between 85 and 100. A marked feature of the pattern you are searching for is that the central peak is drops below this range.</p>
+<p>Using this information, try to implement a <strong>distinctive.feature</strong> that will decrease the running time of this query. You may use the <code>system.time()</code> function to record the elapsed time of the function like so:</p>
+<pre class="r"><code>time.without.df &lt;- system.time(
+  Query(
+    part4.ts,
+    part4.pattern,
+    window.length = 60*60*24*5
+  )
+)
+cat(&quot;Elapsed Time: &quot;, time.without.df[[3]])</code></pre>
+<pre><code>## Elapsed Time:  0.414</code></pre>
 </div>
 <div id="part-5-ruleset" class="section level1">
 <h1>Part 5: Ruleset</h1>
 <p>Provide a dataset with lots of patterns, and ask users to use the rulset parameter to make it return only the ones that have some particular quality about them.</p>
 </div>
-<div id="invite-them-to-use-with-their-own-dataset" class="section level1">
-<h1>Invite them to use with their own dataset</h1>
+<div id="todo-invite-them-to-use-with-their-own-dataset" class="section level1">
+<h1>TODO: Invite them to use with their own dataset</h1>
 </div>
 <div id="part-6-questionnaire" class="section level1">
 <h1>Part 6: Questionnaire</h1>

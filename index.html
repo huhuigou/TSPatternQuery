@@ -11,7 +11,7 @@
 
 <meta name="author" content="Joshua Anthony Marsh" />
 
-<meta name="date" content="2016-08-15" />
+<meta name="date" content="2016-08-16" />
 
 <title>A Time Series Pattern Query Tool Using PIPs and Hybrid Template-Ruleset Matching</title>
 
@@ -295,7 +295,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">A Time Series Pattern Query Tool Using PIPs and Hybrid Template-Ruleset Matching</h1>
 <h4 class="author"><em>Joshua Anthony Marsh</em></h4>
-<h4 class="date"><em>2016-08-15</em></h4>
+<h4 class="date"><em>2016-08-16</em></h4>
 
 </div>
 
@@ -568,8 +568,8 @@ t.with.df &lt;- system.time(
 #Print the elapsed times
 cat(&quot;Elapsed Time Without Excluding Low Variance:&quot;, t.without.df[[3]], 
     &quot;\nElapsed Time With Excluding Low Variance:&quot;, t.with.df[[3]] )</code></pre>
-<pre><code>## Elapsed Time Without Excluding Low Variance: 0.402 
-## Elapsed Time With Excluding Low Variance: 0.155</code></pre>
+<pre><code>## Elapsed Time Without Excluding Low Variance: 0.424 
+## Elapsed Time With Excluding Low Variance: 0.156</code></pre>
 <p>Note that the previously 1st Matched Window from before no longer matches since it does not satisfy the distinctive feature of having a variance greater than 3.5. This may or may not be desireable depending on the circumstances.</p>
 <pre class="r"><code>length(results.with)</code></pre>
 <pre><code>## [1] 1</code></pre>
