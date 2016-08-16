@@ -32,6 +32,10 @@ You may optionally add the `build_vignettes=TRUE` parameter to `devtools::instal
 #Part 2: Pattern Template and Matching Threshold
 
 Run the following command in the R console to import a time series for this exercise.
+
+
+<p style="color:red;">TODO: Import paths probably wont work given their working directory isnt inside TSPatternQuery. Change these so they will work for the participants.</p>
+
 ```{r, fig.show='hold', eval=TRUE}
 part2.ts <- xts(read.csv("tutorial_data/part2_ts.csv")[[2]], 
               order.by = as.POSIXct(read.csv("tutorial_data/part2_ts.csv")[[1]]))

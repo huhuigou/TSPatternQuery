@@ -315,6 +315,9 @@ library(xts)</code></pre>
 <div id="part-2-pattern-template-and-matching-threshold" class="section level1">
 <h1>Part 2: Pattern Template and Matching Threshold</h1>
 <p>Run the following command in the R console to import a time series for this exercise.</p>
+<p style="color:red;">
+TODO: Import paths probably wont work given their working directory isnt inside TSPatternQuery. Change these so they will work for the participants.
+</p>
 <pre class="r"><code>part2.ts &lt;- xts(read.csv(&quot;tutorial_data/part2_ts.csv&quot;)[[2]], 
               order.by = as.POSIXct(read.csv(&quot;tutorial_data/part2_ts.csv&quot;)[[1]]))</code></pre>
 <p>Using the <code>CreateCustomTimeSeries</code> function, please define a pattern template in order to find the following pattern. You may name it <code>part2.pattern</code>. Notice that the points of the pattern are spaced in 5 second intervals.</p>
@@ -356,7 +359,7 @@ library(xts)</code></pre>
   )
 )
 cat(&quot;Elapsed Time: &quot;, time.without.df[[3]])</code></pre>
-<pre><code>## Elapsed Time:  0.636</code></pre>
+<pre><code>## Elapsed Time:  0.386</code></pre>
 </div>
 <div id="part-5-ruleset" class="section level1">
 <h1>Part 5: Ruleset</h1>
