@@ -130,6 +130,31 @@ window.length = 1.2*GetLengthInSeconds(pattern.template)
 
 Special attention should be paid to ensuring that the *window.length* is reasonable. If the *window.length* is too small, the pattern will not fit inside of it. If the *window.length* is too long, it is possible that the algorithm will not find the correct PIPs.
 
+Since *window.length* is defined in seconds, longer time periods may be expressed like so:
+
+```{r, fig.show='hold', eval=FALSE}
+#Recall these conversions
+1 minute = 60 seconds
+1 hour = 60 minutes
+1 day = 24 hours
+1 year = 365 days
+
+#Examples using basic arithmetic
+2 minutes = 60*2
+3 hours = 60*60*3
+3.5 hours = 60*60*3.5
+4.5 days = 60*60*24*4.5
+1 year and 30 days = 60*60*24*365 + 60*60*24*30
+
+#Thus a query with a window length of 8.5 days may be expressed as:
+Query(
+  timeseries = some.timeseries
+  pattern = some.pattern
+  window.length = 60*60*24*8.5
+)
+```
+
+
 *window.length* is the most sensitive parameter as it can greatly effect the PIPs that are identified. Adjusting the window length is a good first step to try when Query is not finding expected patterns.
 
 ###*spearmans.rho.threshold*

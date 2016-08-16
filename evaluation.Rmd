@@ -91,7 +91,7 @@ part4.pattern <- CreateCustomTimeSeries(
 )
 ```
 
-An appropriate **window.length** for this pattern is 5 days. Assume that you have prior knowledge that the normal range of values for this time series is between 85 and 100. A marked feature of the pattern you are searching for is that the central peak is drops below this range. 
+An appropriate **window.length** for this pattern is 5 days. Assume that you have prior knowledge that the normal range of values for this time series is between 85 and 100. A marked feature of the pattern you are searching for is that the central peak drops below this range (i.e. the central peak drops below 85). 
 
 Using this information, try to implement a **distinctive.feature** that will decrease the running time of this query. You may use the `system.time()` function to record the elapsed time of the function like so:
 
