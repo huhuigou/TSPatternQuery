@@ -18,7 +18,7 @@ The aim of this evaluation is to gain feedback on the TSPatternQuery package. It
 
 It is recommended that you use RStudio for the following exercises. If you do not already have RStudio installed, then you may download it from this link: [Download RStudio](https://www.rstudio.com/). Alternatively, you may launch RStudio in a web browser using [rollApp RStudio](https://www.rollapp.com/app/rstudio). The second option may result in slower package download and execution times.
 
-Open a new session in RStudio and navigate to an empty directory. You may call this directory "evaluation". Set this directory as your working directory using the `setwd("<Path to your directory>")` command. The main reason for doing this is because you will be creating a new "evaluation.Rhistory" file within the working directory at the end of this evaluation. This file will contain everything that you have typed during this session, and you will be instructed to upload its contents to a google form. Remember that you may decide not to participate in this evaluation at any time. 
+Open a new session in RStudio and navigate to an empty directory. If you are participating in the evaluation, you may call this directory "evaluation". Set this directory as your working directory using the `setwd("<Path to your directory>")` command. The main reason for doing this is because you will be creating a new "evaluation.Rhistory" file within the working directory at the end of this evaluation. This file will contain everything that you have typed during this session, and you will be instructed to upload its contents to a google form. 
 
 Once you have set the working directory, enter the following commands into the R console.
 ```{r, fig.show='hold', eval=FALSE}
@@ -108,9 +108,32 @@ cat("Elapsed Time: ", time.without.df[[3]])
 
 #Part 5: Ruleset
 
-Provide a dataset with lots of patterns, and ask users to use the rulset parameter to make it return only the ones that have some particular quality about them.
+This exercise will use a list of 10 time series. Run the following command in the R console to import the list.
+```{r, fig.show='hold', eval=TRUE}
+part5.ts.list <- list()
+for( i in 1:10 ){
+  part5.ts.list[[i]] <- xts(read.csv( paste("tutorial_data/part5_ts_", i,".csv", sep="") )[[2]], 
+              order.by = as.POSIXct(read.csv( paste("tutorial_data/part5_ts_", i,".csv", sep="") )[[1]]))
+}
 
-#TODO: Invite them to use with their own dataset
+part4.pattern <- CreateCustomTimeSeries(
+  values = c(0,-4,-3,-8,-3,-4,0),
+  intervals = c(5,5,5,5,5,5)
+)
+```
+
+```{r, fig.show='hold', eval=TRUE}
+part5.pattern <- CreateCustomTimeSeries(
+  values = c(0, 10, 5, 15, 5, 10, 0),
+  intervals = c(5,5,5,5,5,5)
+)
+```
+
+TODO: Provide a dataset with lots of patterns, and ask users to use the rulset parameter to make it return only the ones that have some particular quality about them.
+
+
+
+TODO: Invite them to use with their own dataset if they'd like.
 
 #Part 6: Questionnaire 
 
