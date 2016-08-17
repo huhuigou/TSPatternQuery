@@ -10,7 +10,7 @@ This page contains several exercises that may be used as a tutorial for the TSPa
 
 #Evaluation Preamble
 
-The aim of this evaluation is to gain feedback on the TSPatternQuery package. It is important to involve users in the design of software packages so to ensure that software developed not only solves the problem, but is also usable. This evaluation is set up so that you may do it on your own. Simply follow the instructions given in this document and answer the questionnaire at the end. The exercises below will require you to download a package in RStudio and use it on time series data that will be provided. At the end of the exercises, you will be instructed to save and send me the contents of an .Rhistory file containing everything that you typed into the R console during this session. The only other data collected during this evaluation will be your answers to the questionnaire. If you have any questions, feel free to contact me via email at joshanthonymarsh (AT) gmail (DOT) com. The purpose of this evaluation is not to test your ability. Should you find a particular task difficult, please indicate so in the questionnaire (or by emailing me). This is likely an indicator that something is deficient in the software or its documentation, and is useful feedback. You are welcome to withdraw from the experiment at any time. **At this point, please send me an email at joshanthonymarsh (AT) gmail (DOT) com stating that you agree to take part in this evaluation.** An email including your name and the sentence "I agree to take part in the TSPatternQuery evaluation." will suffice. I also encourage you to include any questions that you may have in this email. If you do include questions in your email, please wait for me to get back to you before you begin the evaluation.
+The aim of this evaluation is to gain feedback on the TSPatternQuery package. It is important to involve users in the design of software packages so to ensure that software developed not only solves the problem, but is also usable. This evaluation is set up so that you may do it on your own. Simply follow the instructions given in this document and answer the questionnaire at the end. The exercises below will require you to download a package in RStudio and use it on time series data that will be provided. The only data collected during this evaluation will be your answers to the questionnaire. If you have any questions, feel free to contact me via email at joshanthonymarsh (AT) gmail (DOT) com. The purpose of this evaluation is not to test your ability. Should you find a particular task difficult, please indicate so in the questionnaire (or by emailing me). This is likely an indicator that something is deficient in the software or its documentation, and is useful feedback. You are welcome to withdraw from the experiment at any time. **At this point, please send me an email at joshanthonymarsh (AT) gmail (DOT) com stating that you agree to take part in this evaluation.** An email including your name and the sentence "I agree to take part in the TSPatternQuery evaluation." will suffice. I also encourage you to include any questions that you may have in this email. If you do include questions in your email, please wait for me to get back to you before you begin the evaluation.
 
 **Please note** that I have avoid describing the TSPatternQuery tool in this evaluation page. Part of what is being evaluated is the documentation for the package. Please click the "Home" button at the top of this page to view the vignette for this package. You are encouraged to read as much of the vignette as you feel is necessary to understand and work with the TSPatternQuery package.
 
@@ -18,7 +18,12 @@ The aim of this evaluation is to gain feedback on the TSPatternQuery package. It
 
 It is recommended that you use RStudio for the following exercises. If you do not already have RStudio installed, then you may download it from this link: [Download RStudio](https://www.rstudio.com/). Alternatively, you may launch RStudio in a web browser using [rollApp RStudio](https://www.rollapp.com/app/rstudio). The second option may result in slower package download and execution times.
 
-Open a new session in RStudio. Please note that if you are taking part in the evaluation, you will be saving your R console session history to a new "evaluation.Rhistory" file at the end of these exercises.
+Open a new session in RStudio. The following setup commands may take several minutes to install the necessary packages. This is normal.
+
+If you have not already installed the devtools package, you will need to run the following command before proceeding.
+```{r, fig.show='hold', eval=FALSE}
+install.packages("devtools")
+```
 
 Enter the following commands into the R console to install the TSPatternQuery package.
 ```{r, fig.show='hold', eval=FALSE}
@@ -55,7 +60,7 @@ Once you have defined the pattern, use the `Query` function to find occurrences 
 
 Set the **return.matched.patterns** parameter to TRUE in order to return a list of the windows that have been matched. Plot these so that you can see how successful your query has been. 
 
-Next, try incrasing the **spearmans.rho.threshold** until you are satisfied that your query isn't too permissive. You may then move on to the next section.
+Next, try increasing the **spearmans.rho.threshold** until you are satisfied that your query isn't too permissive. You may then move on to the next section.
 
 #Part 3: Window Length 
 
@@ -75,9 +80,9 @@ part3.pattern <- CreateCustomTimeSeries(
 )
 ```
 
-Go ahead and run the Query function with the pattern template and time series. It should not find any matches. This is because the length of the sliding window is incorrect. It has been set to 30 seconds in the code (The vector `c(5,5,5,5,5,5)` has a total length of 30) Assume that you have prior knowledge, which allows you to estimate that the length of the pattern should be somewhere between 5 and 9 days. 
+Go ahead and run the Query function with the pattern template and time series. It should not find any matches. This is because the length of the sliding window is incorrect. It has been set to 30 seconds in the code (The vector `c(5,5,5,5,5,5)` has a total length of 30). Assume that you have prior knowledge, which allows you to estimate that the length of the pattern should be somewhere between 5 and 9 days. 
 
-Try rerunning the Query function with an adjusted **window.length** based on your prior knowledge. Try different lengths until you find a match. If you you are unable to find a match after several tries, refer to the documentation over **window.length** to ensure that you are passing it correct values.
+Try rerunning the Query function with an adjusted **window.length** based on your prior knowledge. Try different lengths until you find a match. If you are unable to find a match after several tries, refer to the documentation on **window.length** to ensure that you are passing it correct values.
 
 #Part 4: Distinctive Feature
 
@@ -133,7 +138,7 @@ plot(part5.pattern)
 
 part5.ts.list contains a list of time series with embedded patterns that have successively larger middle peaks. part5.ts.list[[1]] contains peak heights 4, 4, 4. part5.ts.list[[2]] has peak heights 4, 5, 4. part5.ts.list[[3]] has peak heights 4, 6, 4, and so on up to part5.ts.list[[10]].
 
-You may use the for loop provided below to plot each of the time series in the list. Notice that the pattern as been embedded in the centre of each (i.e. indexes 51 to 57).
+You may use the for loop provided below to plot each of the time series in the list. Notice that the pattern has been embedded in the centre of each (i.e. indexes 51 to 57).
 ```{r, fig.show='hold', eval=FALSE}
 for(i in 1:length(part5.ts.list)){
   plot(part5.ts.list[[i]])
@@ -146,12 +151,12 @@ Once you have defined a rule, try testing it on different time series within the
 
 ```{r, fig.show='hold', eval=FALSE}
 short.middle.peak <- CreateCustomTimeSeries(
-  c(0, 10, 5, 14, 5, 10, 0),
+  c(0, 10, 5, 18, 5, 10, 0),
   c(5,5,5,5,5,5)
 )
 
 tall.middle.peak <- CreateCustomTimeSeries(
-  c(0, 10, 5, 16, 5, 10, 0),
+  c(0, 10, 5, 22, 5, 10, 0),
   c(5,5,5,5,5,5)
 )
 
@@ -163,23 +168,7 @@ your.ruleset(tall.middle.peak, tall.middle.peak)
 
 ```
 
-Keep in mind that these time series were generated randomly, so the embeded pattern will likely not be the only match.
-
-You may find the following function useful in plotting your results.
-```{r, fig.show='hold', eval=FALSE}
-plotMatches <- function (results){
-    for( i in 1:length(results)){
-    for( j in 1:length(results[[i]])){
-        if(length(results[[i]])!=0){
-            plot(
-                results[[i]][[j]],
-                main = c("ts", i, "match", j)
-            )
-        }
-    }
-    }
-}
-```
+Keep in mind that these time series were generated randomly, so the embeded pattern will likely not be the only match. If you find that the algorithm is being too permissive, you may try increasing the matching threshold (spearmans.rho.threshold) as you did in part 1.
 
 This concludes the tutorial. If you are participating in the evaluation, you may move on to the questionnaire.
 
@@ -187,14 +176,6 @@ This concludes the tutorial. If you are participating in the evaluation, you may
 
 
 #Part 6: Questionnaire 
-
-The command below will save everything you have typed during this session into a file called "evaluation.Rhistory". It will then print the contents of that file to your console. Please copy and paste this command into the R console and run it. Then copy and paste the output into the Google form before. Once you have done this, please answer the rest of the questions on the form.
-
-```{r, fig.show='hold', eval=FALSE}
-savehistory("evaluation.Rhistory")  
-scan('evaluation.Rhistory','character', sep = "\n"). 
-```
-
 
 <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSc6R3QE-VxXMoOSCndWvoCyafKLzUmVhjBLotdtMBGmKrqefg/viewform?embedded=true" width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
 
