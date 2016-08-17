@@ -56,7 +56,7 @@ plot(
     )
 ```
 
-Once you have defined the pattern, use the `Query` function to find occurrences of the pattern in the timesiers that you imported. You may at first use the *timeseries* and **pattern.template** only. You will likely notice that the Query functions finds multiple matches. If you do not show any matches, there may be a problem with your pattern template. 
+Once you have defined the pattern, use the `Query` function to find occurrences of the pattern in the time series that you imported. You may at first use the *timeseries* and **pattern.template** only. You will likely notice that the Query functions finds multiple matches. If you do not show any matches, there may be a problem with your pattern template. 
 
 Set the **return.matched.patterns** parameter to TRUE in order to return a list of the windows that have been matched. Plot these so that you can see how successful your query has been. 
 
@@ -138,7 +138,7 @@ plot(part5.pattern)
 
 part5.ts.list contains a list of time series with embedded patterns that have successively larger middle peaks. part5.ts.list[[1]] contains peak heights 4, 4, 4. part5.ts.list[[2]] has peak heights 4, 5, 4. part5.ts.list[[3]] has peak heights 4, 6, 4, and so on up to part5.ts.list[[10]].
 
-You may use the for loop provided below to plot each of the time series in the list. Notice that the pattern has been embedded in the centre of each (i.e. indexes 51 to 57).
+You may use the for loop provided below to plot each of the time series in the list. Notice that the pattern has been embedded in the center of each (i.e. indexes 51 to 57).
 ```{r, fig.show='hold', eval=FALSE}
 for(i in 1:length(part5.ts.list)){
   plot(part5.ts.list[[i]])
@@ -168,7 +168,7 @@ your.ruleset(tall.middle.peak, tall.middle.peak)
 
 ```
 
-Keep in mind that these time series were generated randomly, so the embeded pattern will likely not be the only match. If you find that the algorithm is being too permissive, you may try increasing the matching threshold (spearmans.rho.threshold) as you did in part 1.
+Keep in mind that these time series were generated randomly, so the embedded pattern will likely not be the only match. If you find that the algorithm is being too permissive, you may try increasing the matching threshold (spearmans.rho.threshold) as you did in part 1.
 
 This concludes the tutorial. If you are participating in the evaluation, you may move on to the questionnaire.
 

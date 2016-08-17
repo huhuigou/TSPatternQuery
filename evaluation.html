@@ -329,7 +329,7 @@ part2.ts &lt;- xts(read.csv(ts.path.p2)[[2]],
               order.by = as.POSIXct(read.csv(ts.path.p2)[[1]]))</code></pre>
 <p>Using the <code>CreateCustomTimeSeries</code> function, please define a pattern template in order to find the following pattern. You may name it <code>part2.pattern</code>. Notice that the points of the pattern are spaced in 5 second intervals.</p>
 <p><img src="evaluation_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Once you have defined the pattern, use the <code>Query</code> function to find occurrences of the pattern in the timesiers that you imported. You may at first use the <em>timeseries</em> and <strong>pattern.template</strong> only. You will likely notice that the Query functions finds multiple matches. If you do not show any matches, there may be a problem with your pattern template.</p>
+<p>Once you have defined the pattern, use the <code>Query</code> function to find occurrences of the pattern in the time series that you imported. You may at first use the <em>timeseries</em> and <strong>pattern.template</strong> only. You will likely notice that the Query functions finds multiple matches. If you do not show any matches, there may be a problem with your pattern template.</p>
 <p>Set the <strong>return.matched.patterns</strong> parameter to TRUE in order to return a list of the windows that have been matched. Plot these so that you can see how successful your query has been.</p>
 <p>Next, try increasing the <strong>spearmans.rho.threshold</strong> until you are satisfied that your query isn’t too permissive. You may then move on to the next section.</p>
 </div>
@@ -368,7 +368,7 @@ part4.ts &lt;- xts(read.csv(ts.path.p4)[[2]],
   )
 )
 cat(&quot;Elapsed Time: &quot;, time.without.df[[3]])</code></pre>
-<pre><code>## Elapsed Time:  0.448</code></pre>
+<pre><code>## Elapsed Time:  0.395</code></pre>
 </div>
 <div id="part-5-ruleset" class="section level1">
 <h1>Part 5: Ruleset</h1>
@@ -386,7 +386,7 @@ for( i in 1:10 ){
 plot(part5.pattern)</code></pre>
 <p><img src="evaluation_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>part5.ts.list contains a list of time series with embedded patterns that have successively larger middle peaks. part5.ts.list[[1]] contains peak heights 4, 4, 4. part5.ts.list[[2]] has peak heights 4, 5, 4. part5.ts.list[[3]] has peak heights 4, 6, 4, and so on up to part5.ts.list[[10]].</p>
-<p>You may use the for loop provided below to plot each of the time series in the list. Notice that the pattern has been embedded in the centre of each (i.e. indexes 51 to 57).</p>
+<p>You may use the for loop provided below to plot each of the time series in the list. Notice that the pattern has been embedded in the center of each (i.e. indexes 51 to 57).</p>
 <pre class="r"><code>for(i in 1:length(part5.ts.list)){
   plot(part5.ts.list[[i]])
 }</code></pre>
@@ -407,7 +407,7 @@ your.ruleset(short.middle.peak, short.middle.peak)
 
 #This should return true
 your.ruleset(tall.middle.peak, tall.middle.peak)</code></pre>
-<p>Keep in mind that these time series were generated randomly, so the embeded pattern will likely not be the only match. If you find that the algorithm is being too permissive, you may try increasing the matching threshold (spearmans.rho.threshold) as you did in part 1.</p>
+<p>Keep in mind that these time series were generated randomly, so the embedded pattern will likely not be the only match. If you find that the algorithm is being too permissive, you may try increasing the matching threshold (spearmans.rho.threshold) as you did in part 1.</p>
 <p>This concludes the tutorial. If you are participating in the evaluation, you may move on to the questionnaire.</p>
 <div class="well">
 <strong>If you happen to have a data set that you could use TSPatternQuery with, I would be interested in hearing about your experience with it. Please email me at joshanthonymarsh (AT) gmail (DOT) com if you have any feedback after using TSPatternQuery on your own.</strong>

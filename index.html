@@ -325,12 +325,12 @@ cat(&quot;Number of matches = &quot;, length(results))</code></pre>
   ylab = &quot;Value&quot;
   )</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-3-1.png" width="50%" style="display: block; margin: auto;" /></p>
-<p>TSPatternQuery uses a sliding window algorithm. Important points are identified within the window at each offset. They are then compared to a template of the desired pattern using spearman’s rho as a similarity measure. Additional rules provided to the function may be used to increase accuracy, or to short circuit the algorithm in order to increase speed.</p>
+<p>TSPatternQuery uses a sliding window algorithm. Important points are identified within the window at each offset. They are then compared to a template of the desired pattern using Spearman’s rho as a similarity measure. Additional rules provided to the function may be used to increase accuracy, or to short circuit the algorithm in order to increase speed.</p>
 <p>The rest of this document will be laid out as follows. The first section will go into further detail explaining the underlying algorithm. The second section will present the different functions made available through the TSPatternQuery package. This section will also briefly mention the CreateCustomTimeSeries function that has been provided to help the user in creating pattern templates. The last section will discuss best practices and provide a worked example.</p>
 </div>
 <div id="algorithm" class="section level1">
 <h1>Algorithm</h1>
-<p>The TSPatternQuery matching algorithm takes as its input a time series (the data), a pattern represented as a second shorter time series, and (optionally) some additional rules that help describe the desired pattern. These rules are contained within a <em>distinctive feature</em> function and a <em>ruleset</em> function. Additional inputs may be used to specify the length of the sliding window and the spearman rho threshold used for template matching, however these are less critical to understanding the algorithm, and will be discussed in the next section.</p>
+<p>The TSPatternQuery matching algorithm takes as its input a time series (the data), a pattern represented as a second shorter time series, and (optionally) some additional rules that help describe the desired pattern. These rules are contained within a <em>distinctive feature</em> function and a <em>ruleset</em> function. Additional inputs may be used to specify the length of the sliding window and the Spearman rho threshold used for template matching, however these are less critical to understanding the algorithm, and will be discussed in the next section.</p>
 <ol style="list-style-type: decimal">
 <li><p>At a given offset of the sliding window, the first step is identifying all of the points within the window. Note that the window length is defined in seconds, not number of points.</p></li>
 <li><p>This subset of the overall time series is then checked against the rules contained within the <em>distinctive feature</em> function. If it does not match the <em>distinctive feature</em>, the window moves by one point and matching starts over.</p></li>
@@ -366,12 +366,12 @@ plot( GetPIPs(head.and.shoulders, 7), main = &quot;PIPs&quot; )</code></pre>
                   ) </code></pre>
 <div id="timeseries" class="section level3">
 <h3><em>timeseries</em></h3>
-<p><em>timeseries</em> is the data being queried (i.e. the time series that may or may not contain the pattern being searched for). It should be an xts time series object. <em>timeseries</em> can be of any length, and may be regular or irregular (i.e. time intervals betwen points do not have to be of the same length).</p>
+<p><em>timeseries</em> is the data being queried (i.e. the time series that may or may not contain the pattern being searched for). It should be an xts time series object. <em>timeseries</em> can be of any length, and may be regular or irregular (i.e. time intervals between points do not have to be of the same length).</p>
 </div>
 <div id="pattern.template" class="section level3">
 <h3><em>pattern.template</em></h3>
-<p>The <em>pattern.template</em> is an xts time series that serves as a representation of the pattern being searched for. It should be the same length (in seconds) as the pattern is estimated to be, and consist of the minimum number of points necessary to create the pattern’s shape. The first and last points in pattern.template (the endpoints) must be estimations of the time series BEFORE and AFTER the pattern has occured, otherwise it will liekly not match. For example, if the time series is normally constrained between 1 and -1, but the pattern contains points outside of this range, then a good value for the <em>pattern.template</em> endpoints would likely be 0.5.</p>
-<p>The TSPatternQuery algoirhtm does not read times as absolute values. It only considers the time intervals (in seconds) between points. Thus, using a <em>pattern.template</em> with times/dates that are far removed from the timeseries data is perfectly acceptable. In other words, a <em>pattern.template</em> with timestamps from 2016 will still match data from 1990, so long as the shape is sufficiently similar.</p>
+<p>The <em>pattern.template</em> is an xts time series that serves as a representation of the pattern being searched for. It should be the same length (in seconds) as the pattern is estimated to be, and consist of the minimum number of points necessary to create the pattern’s shape. The first and last points in pattern.template (the endpoints) must be estimations of the time series BEFORE and AFTER the pattern has occurred, otherwise it will likely not match. For example, if the time series is normally constrained between 1 and -1, but the pattern contains points outside of this range, then a good value for the <em>pattern.template</em> endpoints would likely be 0.5.</p>
+<p>The TSPatternQuery algorithm does not read times as absolute values. It only considers the time intervals (in seconds) between points. Thus, using a <em>pattern.template</em> with times/dates that are far removed from the time series data is perfectly acceptable. In other words, a <em>pattern.template</em> with time stamps from 2016 will still match data from 1990, so long as the shape is sufficiently similar.</p>
 <p>Similarly, actual values do not matter on the y-axis (only their ranks) because template matching uses Spearman’s rho. See part 4 of the algorithm in section 2 for more information.</p>
 <p>See <span class="citation">(Fu et al. 2007)</span> and <span class="citation">(Z. Zhang et al. 2010)</span> for more on template matching.</p>
 </div>
@@ -384,11 +384,11 @@ plot( GetPIPs(head.and.shoulders, 7), main = &quot;PIPs&quot; )</code></pre>
   #and FALSE otherwise
   
 }</code></pre>
-<p>This function is run PRIOR to PIP identification and template based matching. If the current window does not match the <em>distinctive.feature</em>, then the algorithm will move on to the next window without identifying PIPs. Proper use of the <em>distinictive.feature</em> parameter can signficantly decrease the time it takes for the algorithm to run, since it prevents the slow GetPIPs function from being called.</p>
+<p>This function is run PRIOR to PIP identification and template based matching. If the current window does not match the <em>distinctive.feature</em>, then the algorithm will move on to the next window without identifying PIPs. Proper use of the <em>distinctive.feature</em> parameter can significantly decrease the time it takes for the algorithm to run, since it prevents the slow GetPIPs function from being called.</p>
 <p>Errors originating from the user-defined <em>distinctive.feature</em> function will simply cause the window to move to the next offset, having not found a match. This is as opposed to causing the Query function to crash, and is done for the following reasons:</p>
 <ol style="list-style-type: decimal">
 <li>To encourage the use of short, low-complexity functions.</li>
-<li>There is no gaurantee that enough data points have been found within the window to be able to index specific points (e.g. window[[4]] would be out of bounds for a window containing only 3 points) and it is assumed that many R users are not familiar with error handling. Instructing users that errors in their function will be counted as Match = FALSE has been chosen as a more user friendly alternative to requiring that users learn R’s TryCatch syntax.</li>
+<li>There is no guarantee that enough data points have been found within the window to be able to index specific points (e.g. window[[4]] would be out of bounds for a window containing only 3 points) and it is assumed that many R users are not familiar with error handling. Instructing users that errors in their function will be counted as Match = FALSE has been chosen as a more user friendly alternative to requiring that users learn R’s TryCatch syntax.</li>
 </ol>
 <p>Users are strongly recommended to test their <em>distinctive.feature</em> functions before using them with a large data set. See the Best Practices section below for more info on how to test these functions.</p>
 <p>This is similar to ruleset matching as discussed in <span class="citation">(Fu et al. 2007)</span> and <span class="citation">(Z. Zhang et al. 2010)</span>, however, with an emphasis on improving speed rather than accuracy.</p>
@@ -477,7 +477,7 @@ Query(
 </div>
 <div id="getpips" class="section level2">
 <h2>GetPIPs</h2>
-<p>Perceptually important points (PIPs) are points that have been identified as perceptually important for the formation of patterns within a time series. GetPIPs is used by the Query function to identify PIPs within the sliding window at each offset. The function has been made available for users to call in order to test their curstom pattern templates.</p>
+<p>Perceptually important points (PIPs) are points that have been identified as perceptually important for the formation of patterns within a time series. GetPIPs is used by the Query function to identify PIPs within the sliding window at each offset. The function has been made available for users to call in order to test their custom pattern templates.</p>
 <p>GetPIPs uses the perpendicular distance method of PIP identification. It begins by assigning the endpoints of the <em>timeseries</em> as the first two PIPs. It then finds the point between those two PIPs with the greatest perpendicular distance to the line connecting said PIPs. It repeats this process until the desired number of PIPs have been identified.</p>
 <p>See <span class="citation">(Fu et al. 2007)</span> for more information on PIPs.</p>
 <pre class="r"><code>GetPIPs &lt;- function(timeseries, num.pips) </code></pre>
@@ -497,7 +497,7 @@ Query(
 <pre class="r"><code>MatchPattern &lt;- function(timeseries, pattern.template, threshold=0.7)</code></pre>
 <div id="timeseries-3" class="section level3">
 <h3><em>timeseries</em></h3>
-<p>The timeseries that will be check against the pattern to see if they match.</p>
+<p>The time series that will be check against the pattern to see if they match.</p>
 </div>
 <div id="pattern.template-1" class="section level3">
 <h3><em>pattern.template</em></h3>
@@ -518,15 +518,15 @@ Query(
 <ol style="list-style-type: decimal">
 <li>Does it return TRUE when its supposed to</li>
 <li>Does it return FALSE when its supposed to</li>
-<li>Are there any situations in which it might return NA? This will be counted as FALSE by the algorithm. Is this desireable?</li>
-<li>Are there any situations in which it might throw an Error? This will be counted as FALSE by the algorithm. Is this desireable?</li>
+<li>Are there any situations in which it might return NA? This will be counted as FALSE by the algorithm. Is this desirable?</li>
+<li>Are there any situations in which it might throw an Error? This will be counted as FALSE by the algorithm. Is this desirable?</li>
 </ol>
-<p>More rigorous testing may be performed using RUnit or testthat packages. These facilitate the creation of automated scripts containing the same sort of tests that one might type into the console, as described above. The advantage of this sort of testing is that it is automated, and may thus be run each time something is added or changed. This reduces the liklihood of things breaking unexpectedly.</p>
+<p>More rigorous testing may be performed using RUnit or testthat packages. These facilitate the creation of automated scripts containing the same sort of tests that one might type into the console, as described above. The advantage of this sort of testing is that it is automated, and may thus be run each time something is added or changed. This reduces the likelihood of things breaking unexpectedly.</p>
 <p>Note that the CreateCustomTimeSeries function may be used, not only to create pattern templates, but also to create time series for testing purposes.</p>
 </div>
 <div id="simple-distinctive-features" class="section level2">
 <h2>Simple Distinctive Features</h2>
-<p>Below are several functions that may be passed to the <em>distinctive.feature</em> parameter. Remember that the aim of <em>distinctive.feature</em> is to reduce running time by finding false matches early in the algorithms exectution (i.e. before PIP identification). The first function will include a worked example.</p>
+<p>Below are several functions that may be passed to the <em>distinctive.feature</em> parameter. Remember that the aim of <em>distinctive.feature</em> is to reduce running time by finding false matches early in the algorithms execution (i.e. before PIP identification). The first function will include a worked example.</p>
 <div id="exclusion-based-on-variance---a-worked-example" class="section level3">
 <h3>Exclusion Based on Variance - A Worked Example</h3>
 <p>If the variance of the pattern significantly differs from that of the surrounding time series, then excluding low (and/or high) variance segments can be an effective distinctive feature.</p>
@@ -610,9 +610,9 @@ t.with.df &lt;- system.time(
 #Print the elapsed times
 cat(&quot;Elapsed Time Without Excluding Low Variance:&quot;, t.without.df[[3]], 
     &quot;\nElapsed Time With Excluding Low Variance:&quot;, t.with.df[[3]] )</code></pre>
-<pre><code>## Elapsed Time Without Excluding Low Variance: 0.397 
-## Elapsed Time With Excluding Low Variance: 0.157</code></pre>
-<p>Note that the previously 1st Matched Window from before no longer matches since it does not satisfy the distinctive feature of having a variance greater than 3.5. This may or may not be desireable depending on the circumstances.</p>
+<pre><code>## Elapsed Time Without Excluding Low Variance: 0.42 
+## Elapsed Time With Excluding Low Variance: 0.256</code></pre>
+<p>Note that the previously 1st Matched Window from before no longer matches since it does not satisfy the distinctive feature of having a variance greater than 3.5. This may or may not be desirable depending on the circumstances.</p>
 <pre class="r"><code>length(results.with)</code></pre>
 <pre><code>## [1] 1</code></pre>
 <pre class="r"><code>plot(results.with[[1]], main=&quot;The Only Window Returned When Variance \nExclusion was Used&quot;, 
@@ -644,7 +644,7 @@ decreasing.monotonically &lt;- function(window){
 </div>
 <div id="in-range" class="section level3">
 <h3>In Range</h3>
-<p>Excluding windows that do or dont contain points in some range can be a simple yet effective distinctive feature if the pattern is known only occur in or outside of said range.</p>
+<p>Excluding windows that do or don’t contain points in some range can be a simple yet effective distinctive feature if the pattern is known only occur in or outside of said range.</p>
 <pre class="r"><code>within.range &lt;- function(window){
   ceiling &lt;- 5
   floor &lt;- -5
@@ -654,7 +654,7 @@ decreasing.monotonically &lt;- function(window){
 </div>
 <div id="a-note-on-rulesets" class="section level2">
 <h2>A Note on Rulesets</h2>
-<p>The <em>ruleset</em> parameter is meant for more complex functions than <em>distinctive.feature</em>. A good rule of thumb is if a function uses loops (especially embedded loops), or is otherwise knwon to be slow, then it should be included in <em>ruleset</em> rather than <em>distinctive.feature</em>. Functions that rely on PIPs must also go in <em>rulset</em> since PIPs are not made available to <em>distinctive.feature</em> functions.</p>
+<p>The <em>ruleset</em> parameter is meant for more complex functions than <em>distinctive.feature</em>. A good rule of thumb is if a function uses loops (especially embedded loops), or is otherwise known to be slow, then it should be included in <em>ruleset</em> rather than <em>distinctive.feature</em>. Functions that rely on PIPs must also go in <em>rulset</em> since PIPs are not made available to <em>distinctive.feature</em> functions.</p>
 </div>
 <div id="combining-rules-for-aggregated-rulesets-and-distinctive-features" class="section level2">
 <h2>Combining Rules for Aggregated Rulesets and Distinctive Features</h2>
@@ -688,7 +688,7 @@ middle.peak.is.higher &lt;- function(pips){
 variance.greater.than.2 &lt;- function(window){
   return(var(window)&gt;2)
 }</code></pre>
-<p>Then call them all from within a single “aggregate ruleset” function. The aggreate function is passed to Query as normal.</p>
+<p>Then call them all from within a single “aggregate ruleset” function. The aggregate function is passed to Query as normal.</p>
 <pre class="r"><code>aggregate.ruleset &lt;- function(window, pips){
   
   firstRule &lt;- contains.three.peaks.above.10(pips)
