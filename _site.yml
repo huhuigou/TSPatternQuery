@@ -7,6 +7,10 @@ navbar:
       href: index.html
     - text: "Tutorial/User Evaluation"
       href: evaluation.html
+  right:
+    - text: Github Repository
+      icon: fa-github
+      href: https://github.com/joshmarsh/TSPatternQuery
 output:
   html_document:
     toc: true
