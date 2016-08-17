@@ -588,8 +588,8 @@ t.with.df &lt;- system.time(
 #Print the elapsed times
 cat(&quot;Elapsed Time Without Excluding Low Variance:&quot;, t.without.df[[3]], 
     &quot;\nElapsed Time With Excluding Low Variance:&quot;, t.with.df[[3]] )</code></pre>
-<pre><code>## Elapsed Time Without Excluding Low Variance: 0.476 
-## Elapsed Time With Excluding Low Variance: 0.173</code></pre>
+<pre><code>## Elapsed Time Without Excluding Low Variance: 0.516 
+## Elapsed Time With Excluding Low Variance: 0.159</code></pre>
 <p>Note that the previously 1st Matched Window from before no longer matches since it does not satisfy the distinctive feature of having a variance greater than 3.5. This may or may not be desireable depending on the circumstances.</p>
 <pre class="r"><code>length(results.with)</code></pre>
 <pre><code>## [1] 1</code></pre>

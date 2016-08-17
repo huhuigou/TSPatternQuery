@@ -6,7 +6,7 @@ library(TSPatternQuery)
 library(xts)
 ```
 
-This page contains several exercises that may be used as a tutorial for the TSPatternQuery package. Should you wish to help by providing feedback, you may also participate in the user evaluation. Instructions for doing so are included in the next section.
+This page contains several exercises that may be used as a tutorial for the TSPatternQuery package. You may click the Home button at the top of the page to view the documentation if you are unsure of how to do something. Should you wish to help by providing feedback, you may also participate in the user evaluation. Instructions for doing so are included in the next section.
 
 #Evaluation Preamble
 
