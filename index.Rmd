@@ -12,8 +12,6 @@ library(xts)
 library(zoo)
 ```
 
-TODO: Edit sections so that they more directly answer how to do each task in the tutorial.
-
 #Introduction
 TSPatternQuery is a Time Series Pattern Querying Tool meant for quick exploration of time series patterns. This package can be viewed as an implementation of the "real time hybrid pattern matching scheme" presented in [@Zhang:2010:RTH:1862242.1862263]. The following example illustrates how TSPatternQuery is used:
 
