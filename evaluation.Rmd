@@ -12,15 +12,15 @@ This page contains several exercises that may be used as a tutorial for the TSPa
 
 The aim of this evaluation is to gain feedback on the TSPatternQuery package. It is important to involve users in the design of software packages so to ensure that software developed not only solves the problem, but is also usable. This evaluation is set up so that you may do it on your own. Simply follow the instructions given in this document and answer the questionnaire at the end. The exercises below will require you to download a package in RStudio and use it on time series data that will be provided. At the end of the exercises, you will be instructed to save and send me the contents of an .Rhistory file containing everything that you typed into the R console during this session. The only other data collected during this evaluation will be your answers to the questionnaire. If you have any questions, feel free to contact me via email at joshanthonymarsh (AT) gmail (DOT) com. The purpose of this evaluation is not to test your ability. Should you find a particular task difficult, please indicate so in the questionnaire (or by emailing me). This is likely an indicator that something is deficient in the software or its documentation, and is useful feedback. You are welcome to withdraw from the experiment at any time. **At this point, please send me an email at joshanthonymarsh (AT) gmail (DOT) com stating that you agree to take part in this evaluation.** An email including your name and the sentence "I agree to take part in the TSPatternQuery evaluation." will suffice. I also encourage you to include any questions that you may have in this email. If you do include questions in your email, please wait for me to get back to you before you begin the evaluation.
 
-**Please note** that I have intentionally avoided describing the TSPatternQuery tool on this evaluation page. Part of what is being evaluated is the documentation for the package. Please click the "Home" button at the top of this page to view the vignette for this package. You are encouraged to read as much of the vignette as you feel is necessary to understand and work with the TSPatternQuery package.
+**Please note** that I have avoid describing the TSPatternQuery tool in this evaluation page. Part of what is being evaluated is the documentation for the package. Please click the "Home" button at the top of this page to view the vignette for this package. You are encouraged to read as much of the vignette as you feel is necessary to understand and work with the TSPatternQuery package.
 
 #Part 1: Setup
 
 It is recommended that you use RStudio for the following exercises. If you do not already have RStudio installed, then you may download it from this link: [Download RStudio](https://www.rstudio.com/). Alternatively, you may launch RStudio in a web browser using [rollApp RStudio](https://www.rollapp.com/app/rstudio). The second option may result in slower package download and execution times.
 
-Open a new session in RStudio and navigate to an empty directory. If you are participating in the evaluation, you may call this directory "evaluation". Set this directory as your working directory using the `setwd("<Path to your directory>")` command. The main reason for doing this is because you will be creating a new "evaluation.Rhistory" file within the working directory at the end of this evaluation. This file will contain everything that you have typed during this session, and you will be instructed to upload its contents to a google form. 
+Open a new session in RStudio. Please note that if you are taking part in the evaluation, you will be saving your R console session history to a new "evaluation.Rhistory" file at the end of these exercises.
 
-Once you have set the working directory, enter the following commands into the R console.
+Enter the following commands into the R console to install the TSPatternQuery package.
 ```{r, fig.show='hold', eval=FALSE}
 devtools::install_github("joshmarsh/TSPatternQuery")
 library(TSPatternQuery)
@@ -31,14 +31,12 @@ You may optionally add the `build_vignettes=TRUE` parameter to `devtools::instal
 
 #Part 2: Pattern Template and Matching Threshold
 
-Run the following command in the R console to import a time series for this exercise.
-
-
-<p style="color:red;">TODO: Import paths probably wont work given their working directory isnt inside TSPatternQuery. Change these so they will work for the participants.</p>
+Copy-paste the following command into the R console to import a time series for this exercise.
 
 ```{r, fig.show='hold', eval=TRUE}
-part2.ts <- xts(read.csv("tutorial_data/part2_ts.csv")[[2]], 
-              order.by = as.POSIXct(read.csv("tutorial_data/part2_ts.csv")[[1]]))
+ts.path.p2 <- system.file("extdata", "part2_ts.csv", package = "TSPatternQuery")
+part2.ts <- xts(read.csv(ts.path.p2)[[2]], 
+              order.by = as.POSIXct(read.csv(ts.path.p2)[[1]]))
 ```
 
 Using the `CreateCustomTimeSeries` function, please define a pattern template in order to find the following pattern. You may name it `part2.pattern`. Notice that the points of the pattern are spaced in 5 second intervals.
@@ -61,10 +59,12 @@ Next, try incrasing the **spearmans.rho.threshold** until you are satisfied that
 
 #Part 3: Window Length 
 
-Run the following command in the R console to import a time series for this exercise.
+Copy-paste the following command into the R console to import a time series for this exercise.
+
 ```{r, fig.show='hold', eval=TRUE}
-part3.ts <- xts(read.csv("tutorial_data/part3_ts.csv")[[2]], 
-              order.by = as.POSIXct(read.csv("tutorial_data/part3_ts.csv")[[1]]))
+ts.path.p3 <- system.file("extdata", "part3_ts.csv", package = "TSPatternQuery")
+part3.ts <- xts(read.csv(ts.path.p3)[[2]], 
+              order.by = as.POSIXct(read.csv(ts.path.p3)[[1]]))
 ```
 
 Run the following command in the R console to create a pattern template. This pattern is the same shape as the one that you used in part 2, however it is being provided to you this time to ensure that it is correct.
@@ -81,10 +81,11 @@ Try rerunning the Query function with an adjusted **window.length** based on you
 
 #Part 4: Distinctive Feature
 
-Run the following command in the R console to import a time series for this exercise.
+Copy-paste the following command into the R console to import a time series for this exercise.
 ```{r, fig.show='hold', eval=TRUE}
-part4.ts <- xts(read.csv("tutorial_data/part4_ts.csv")[[2]], 
-              order.by = as.POSIXct(read.csv("tutorial_data/part4_ts.csv")[[1]]))
+ts.path.p4 <- system.file("extdata", "part4_ts.csv", package = "TSPatternQuery")
+part4.ts <- xts(read.csv(ts.path.p4)[[2]], 
+              order.by = as.POSIXct(read.csv(ts.path.p4)[[1]]))
 ```
 
 Run the following command in the R console to create a pattern template.
@@ -112,36 +113,80 @@ cat("Elapsed Time: ", time.without.df[[3]])
 
 #Part 5: Ruleset
 
-This exercise will use a list of 10 time series. Run the following command in the R console to import the list.
+This exercise will use a list of 10 time series. Copy-paste the following command into the R console to import the list.
 ```{r, fig.show='hold', eval=TRUE}
 part5.ts.list <- list()
 for( i in 1:10 ){
-  part5.ts.list[[i]] <- xts(read.csv( paste("tutorial_data/part5_ts_", i,".csv", sep="") )[[2]], 
-              order.by = as.POSIXct(read.csv( paste("tutorial_data/part5_ts_", i,".csv", sep="") )[[1]]))
+  path <- system.file("extdata", paste("part5_ts_", i, ".csv", sep = ""), package = "TSPatternQuery")
+  part5.ts.list[[i]] <- xts(read.csv(path)[[2]], order.by = as.POSIXct(read.csv(path)[[1]]))
 }
-
-part4.pattern <- CreateCustomTimeSeries(
-  values = c(0,-4,-3,-8,-3,-4,0),
-  intervals = c(5,5,5,5,5,5)
-)
 ```
 
+Run this command to define the pattern that you will be using.
 ```{r, fig.show='hold', eval=TRUE}
 part5.pattern <- CreateCustomTimeSeries(
   values = c(0, 10, 5, 15, 5, 10, 0),
   intervals = c(5,5,5,5,5,5)
 )
+plot(part5.pattern)
 ```
 
-TODO: Provide a dataset with lots of patterns, and ask users to use the rulset parameter to make it return only the ones that have some particular quality about them.
+part5.ts.list contains a list of time series with embedded patterns that have successively larger middle peaks. part5.ts.list[[1]] contains peak heights 4, 4, 4. part5.ts.list[[2]] has peak heights 4, 5, 4. part5.ts.list[[3]] has peak heights 4, 6, 4, and so on up to part5.ts.list[[10]].
 
+You may use the for loop provided below to plot each of the time series in the list. Notice that the pattern as been embedded in the centre of each (i.e. indexes 51 to 57).
+```{r, fig.show='hold', eval=FALSE}
+for(i in 1:length(part5.ts.list)){
+  plot(part5.ts.list[[i]])
+}
+```
 
+Imagine you are looking for variants of part5.pattern where the middle peak is particularly high. Try defining a ruleset that only matches patterns where the middle peak is twice as high as the first peak. You may find it useful to define peak height based on the endpoints of the pattern, for example: `height.baseline <- mean(pips[[1]], pips[[7]])`.
 
-TODO: Invite them to use with their own dataset if they'd like.
+Once you have defined a rule, try testing it on different time series within the list. You may find it useful to test your rule before running it on the actual data. You may do so by making your own time series using the CreateCustomTimeSeries function and passing them to your ruleset function like so: 
+
+```{r, fig.show='hold', eval=FALSE}
+short.middle.peak <- CreateCustomTimeSeries(
+  c(0, 10, 5, 14, 5, 10, 0),
+  c(5,5,5,5,5,5)
+)
+
+tall.middle.peak <- CreateCustomTimeSeries(
+  c(0, 10, 5, 16, 5, 10, 0),
+  c(5,5,5,5,5,5)
+)
+
+#This should return false
+your.ruleset(short.middle.peak, short.middle.peak)
+
+#This should return true
+your.ruleset(tall.middle.peak, tall.middle.peak)
+
+```
+
+Keep in mind that these time series were generated randomly, so the embeded pattern will likely not be the only match.
+
+You may find the following function useful in plotting your results.
+```{r, fig.show='hold', eval=FALSE}
+plotMatches <- function (results){
+    for( i in 1:length(results)){
+    for( j in 1:length(results[[i]])){
+        if(length(results[[i]])!=0){
+            plot(
+                results[[i]][[j]],
+                main = c("ts", i, "match", j)
+            )
+        }
+    }
+    }
+}
+```
+
+This concludes the tutorial. If you are participating in the evaluation, you may move on to the questionnaire.
+
+<div class="well">**If you happen to have a data set that you could use TSPatternQuery with, I would be interested in hearing about your experience with it. Please email me at joshanthonymarsh (AT) gmail (DOT) com if you have any feedback after using TSPatternQuery on your own.**</div>
+
 
 #Part 6: Questionnaire 
-
-Add questions to questionnaire about if they used their own dataset
 
 The command below will save everything you have typed during this session into a file called "evaluation.Rhistory". It will then print the contents of that file to your console. Please copy and paste this command into the R console and run it. Then copy and paste the output into the Google form before. Once you have done this, please answer the rest of the questions on the form.
 
@@ -151,7 +196,7 @@ scan('evaluation.Rhistory','character', sep = "\n").
 ```
 
 
-Google form goes here
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSc6R3QE-VxXMoOSCndWvoCyafKLzUmVhjBLotdtMBGmKrqefg/viewform?embedded=true" width="760" height="500" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
 
 #Part 7: Debriefing
 
