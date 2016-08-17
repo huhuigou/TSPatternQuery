@@ -1,5 +1,5 @@
 ---
-title: "A Time Series Pattern Query Tool Using PIPs and Hybrid Template-Ruleset Matching"
+title: "A Pattern Querying Tool for Time Series Using PIPs and Hybrid Template-Ruleset Matching"
 author: "Joshua Anthony Marsh"
 date: "`r Sys.Date()`"
 
@@ -15,9 +15,51 @@ library(zoo)
 TODO: Edit sections so that they more directly answer how to do each task in the tutorial.
 
 #Introduction
-TSPatternQuery is a Time Series Pattern Querying Tool meant for quick exploration of time series patterns. This package can be viewed as an implementation of the "real time hybrid pattern matching scheme" presented in [@Zhang:2010:RTH:1862242.1862263]. In short, this is a sliding window algorithm. Important points are identified within the window at each offset. They are then compared to a template of the desired pattern using spearman's rho as a similarity measure. Additional rules provided to the function may be used to increase accuracy, or to short circuit the algorithm in order to increase speed.
+TSPatternQuery is a Time Series Pattern Querying Tool meant for quick exploration of time series patterns. This package can be viewed as an implementation of the "real time hybrid pattern matching scheme" presented in [@Zhang:2010:RTH:1862242.1862263]. The following example illustrates how TSPatternQuery is used:
 
-The rest of this document will be laid out as follows. The first section will go into further detail explaining the underlying algorithm. The second section will present the different functions made available through the TSPatternQuery. This section will also briefly mention the CreateCustomTimeSeries function that has been provided to help the user in creating pattern templates. The last section will discuss best practices and provide examples.
+```{r, echo=FALSE, fig.show='hold', out.width='50%'}
+
+path <- system.file("extdata", "introduction_ts.csv", package = "TSPatternQuery")
+example.timeseries<- xts(read.csv(path)[[2]],order.by = as.POSIXct(read.csv(path)[[1]]))
+plot(
+  example.timeseries,
+  main="example.timeseries",
+  xlab = "Seconds",
+  ylab = "Value"
+)
+
+example.pattern <- CreateCustomTimeSeries(
+  values = c(0, -1, 2, -4, 2, -1, 0),
+  intervals = c(5,5,5,5,5,5)
+)
+plot(
+  example.pattern,
+  main="example.pattern",
+  xlab = "Seconds",
+  ylab = "Value"
+)
+```
+
+```{r, echo=TRUE, fig.show='hold', fig.align='center' ,out.width='50%'}
+
+results <- Query(
+    example.timeseries,
+    example.pattern,
+    return.matched.patterns = TRUE
+)
+cat("Number of matches = ", length(results))
+plot(
+  results[[1]],
+  main="The Matching Window",
+  xlab = "Seconds",
+  ylab = "Value"
+  )
+
+```
+
+TSPatternQuery uses a sliding window algorithm. Important points are identified within the window at each offset. They are then compared to a template of the desired pattern using spearman's rho as a similarity measure. Additional rules provided to the function may be used to increase accuracy, or to short circuit the algorithm in order to increase speed.
+
+The rest of this document will be laid out as follows. The first section will go into further detail explaining the underlying algorithm. The second section will present the different functions made available through the TSPatternQuery package. This section will also briefly mention the CreateCustomTimeSeries function that has been provided to help the user in creating pattern templates. The last section will discuss best practices and provide a worked example.
 
 #Algorithm
 The TSPatternQuery matching algorithm takes as its input a time series (the data), a pattern represented as a second shorter time series, and (optionally) some additional rules that help describe the desired pattern. These rules are contained within a *distinctive feature* function and a *ruleset* function. Additional inputs may be used to specify the length of the sliding window and the spearman rho threshold used for template matching, however these are less critical to understanding the algorithm, and will be discussed in the next section.
@@ -84,18 +126,13 @@ The *distincitve.feature* parameter accepts a function containing rules for rule
 ```{r, fig.show='hold', eval=FALSE}
 distinctive.feature <- function(window){
   
-  Window.Matches.Distinctive.Feature <- #Some Expression
-    
-  if( Window.Matches.Distinctive.Feature ){
-    return(TRUE)
-  }
-  else{
-    return(FALSE)
-  }
+  #return TRUE if the window matches the distinctive feature
+  #and FALSE otherwise
+  
 }
 ```
 
-This function is run PRIOR to PIP identification and template based matching. If the current window does not contain match the *distinctive.feature*, then the algorithm will move on to the next window with identifying PIPs. Proper use of the *distinictive.feature* parameter can signficantly decrease the time it takes for the algorithm to run, since it prevents the slow GetPIPs function from being called.
+This function is run PRIOR to PIP identification and template based matching. If the current window does not match the *distinctive.feature*, then the algorithm will move on to the next window without identifying PIPs. Proper use of the *distinictive.feature* parameter can signficantly decrease the time it takes for the algorithm to run, since it prevents the slow GetPIPs function from being called.
 
 Errors originating from the user-defined *distinctive.feature* function will simply cause the window to move to the next offset, having not found a match. This is as opposed to causing the Query function to crash, and is done for the following reasons:
 
@@ -111,7 +148,12 @@ This is similar to ruleset matching as discussed in [@Fu:2007:STS:1230165.123053
 The *ruleset* parameter accepts a function containing rules for ruleset based matching. It should accept two parameters, which will contain the raw window and PIPs from said window respectively (both in xts format).
 
 ```{r, fig.show='hold', eval=FALSE}
-ruleset <- function(window, pips){}
+ruleset <- function(window, pips){
+  
+  #return TRUE if the window and/or pips match the ruleset
+  #and FALSE otherwise
+  
+}
 ```
 
 This function is run AFTER PIP identification and template based matching. Unlike the *distinctive.feature* parameter, errors originating from this function WILL cause Query to crash. This is done for because *ruleset* is considered a more advanced feature than *distinctive.feature* since it is meant to contain higher complexity rules. Therefore users are expected to employ proper error handling within their code.
