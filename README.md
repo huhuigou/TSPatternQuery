@@ -1,6 +1,6 @@
 ###Time Series Pattern Query Tool
 
-This is an R package for defining patterns in time series and using these patterns to "query" time series data. You may use the this package, however be aware that it is still in development. 
+This is an R package for defining patterns in time series and using these patterns to "query" time series data. You may use this package, however be aware that it is still in development. 
 
 Click here to read the documentation: https://joshmarsh.github.io/TSPatternQuery/index.html
 
