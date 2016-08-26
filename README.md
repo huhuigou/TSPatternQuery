@@ -15,6 +15,7 @@ library(xts)
 
 TODO:
 * Allow Template Matching to be switched off, for ruleset-only matching. 
+* Adjust return.matched.windows=F Output. "Error column should be changed or removed"
 * Address Feedback from Reddit:
   * The title for GetWindowVariancePDF is "Plot the PDF of Variances ..." but it doesn't do any plotting.
   * Query has a library(xts) call that isn't necessary (also flagged by check()
