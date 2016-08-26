@@ -14,7 +14,7 @@ library(xts)
 
 
 TODO:
-*Allow Template Matching to be switched off, for ruleset-only matching.
+* Allow Template Matching to be switched off, for ruleset-only matching. 
 * Address Feedback from Reddit:
   * The title for GetWindowVariancePDF is "Plot the PDF of Variances ..." but it doesn't do any plotting.
   * Query has a library(xts) call that isn't necessary (also flagged by check()
