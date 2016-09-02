@@ -57,7 +57,8 @@ Query <- function(timeseries,
   library(xts)
   stopifnot(is.xts(timeseries))
   stopifnot(is.xts(pattern.template))
-  stopifnot(spearmans.rho.threshold > 0)
+  #Removed for eval only
+  #stopifnot(spearmans.rho.threshold > 0)
   stopifnot(spearmans.rho.threshold < 1)
   if(!missing(ruleset)){
     stopifnot(is.function(ruleset))
@@ -117,6 +118,11 @@ Query <- function(timeseries,
       next()
     }
 
+    #added for eval only
+    if(spearmans.rho.threshold<0){
+      rho <- MatchPattern(pips, pattern.template, spearmans.rho.threshold)
+      return(rho)
+    }
     matches <- MatchPattern(pips, pattern.template, spearmans.rho.threshold)
 
 

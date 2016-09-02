@@ -31,5 +31,11 @@ MatchPattern <- function(timeseries, pattern.template, threshold=0.7){
   pt <- as.vector(pattern.template)
 
   tryCatch.W.E(rho<-cor.test(ts, pt, method="spearman")[[4]])
+
+  #added for eval only
+  if(threshold<0){
+    return(rho)
+  }
+
   return( as.logical(rho > threshold) )
 }
