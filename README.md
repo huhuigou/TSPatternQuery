@@ -23,7 +23,6 @@ TODO:
   * Query has a library(xts) call that isn't necessary (also flagged by check()
   * Dependencies in Imports should be Depends (this is a hairy distinction)
   * You could use some examples in your major user-facing functions
-  * One of your tests fails because it relies on another package (TSTestDataUtil) which isn't defined as a dependency
   * Consider following the testthat templates described here: http://r-pkgs.had.co.nz/tests.html
   * paste0 is essentially a sep="" version of paste
   * GetLengthInSeconds seems oddly specific; do you always want seconds? You could make this more flexible by replacing it with
