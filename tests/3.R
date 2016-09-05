@@ -1,7 +1,7 @@
 #'Tests for query.R
 #'@import RUnit, xts, TSTestDataUtil
 library(RUnit)
-library(TSTestDataUtil)
+library(TSPatternQuery)
 
 test.Query <- function(){
 

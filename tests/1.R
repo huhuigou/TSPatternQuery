@@ -1,7 +1,7 @@
 #'Tests for get_pips.R
 #'@import RUnit, xts, TSTestDataUtil
 library(RUnit)
-library(TSTestDataUtil)
+library(TSPatternQuery)
 
 test.GetPIPs <- function() {
   ts <- CreateCustomTimeSeries(

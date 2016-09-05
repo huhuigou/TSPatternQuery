@@ -1,6 +1,7 @@
 #'Test Case for create_time_series.R
 #'@import RUnit, xts
 library(RUnit)
+library(TSPatternQuery)
 
 test.CreateCustomTimeSeries <- function() {
   ts = CreateCustomTimeSeries(

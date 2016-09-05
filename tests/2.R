@@ -1,7 +1,7 @@
 #'Tests for pattern_matching.R
 #'@import RUnit, xts, TSTestDataUtil
 library(RUnit)
-library(TSTestDataUtil)
+library(TSPatternQuery)
 
 test.MatchPattern <- function(){
 
