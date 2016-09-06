@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{GetWindowVariancePDF}
 \alias{GetWindowVariancePDF}
-\title{Plot the PDF of Variances for Windows of a Given Length in a Time Series}
+\title{Get the PDF of Variances for Windows of a Given Length in a Time Series}
 \usage{
 GetWindowVariancePDF(timeseries, window.length)
 }
@@ -19,10 +19,11 @@ object itself, which contains 512 estimated (variance, probability) pairs.
 \description{
 Scans through the provided time series with a window of window.length size, and records the
 variances at each offset. Then finds the probability density function for said variances
-and plots it.
+and returns a list with the density object, density function, and the variance value with
+the highest probability.
 }
 \details{
-Assuming d.fun <- GetWindowVariancePDFlot() the PDF function using
+Assuming d.fun <- GetWindowVariancePDFlot(), plot the PDF function using
 curve(d.fun$density.fun(x), from= min(d.fun$density.points$x), to=max(d.fun$density.points$x) )
 }
 

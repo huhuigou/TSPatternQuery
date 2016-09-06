@@ -10,7 +10,6 @@ output:
     toc_depth: 2
 vignette: >
   %\VignetteIndexEntry{A Time Series Pattern Query Tool Using PIPs and Hybrid Template-Ruleset Matching}
-  # %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
 bibliography: ../bibliography.bib
