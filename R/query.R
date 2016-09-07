@@ -156,7 +156,7 @@ GetLengthInSeconds <- function(timeseries){
   return(diff)
 }
 
-#' TODO: Make sure the below is properly cited, not sure if just copying documentation is enoug:
+#' A tryCatch with warnings taken from the R error.catching demo.
 #' @references
 #' demo(error.catching)
 #'

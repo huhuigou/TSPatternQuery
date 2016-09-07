@@ -1,5 +1,4 @@
 
-
 #'Check if a Template Pattern Matches a Timeseries
 #'
 #'Returns TRUE the template pattern matches the timeseries (by passing a threshold for Spearman's

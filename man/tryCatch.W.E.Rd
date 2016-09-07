@@ -14,7 +14,7 @@ a list with 'value' and 'warning', where
   'value' may be an error caught.
 }
 \description{
-TODO: Make sure the below is properly cited, not sure if just copying documentation is enoug:
+A tryCatch with warnings taken from the R error.catching demo.
 }
 \author{
 Martin Maechler;
